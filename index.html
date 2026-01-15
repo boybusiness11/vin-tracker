@@ -814,7 +814,7 @@
             }
         }
 
-        async function loadFromSheets() {
+        async function loadFromSheets(showAlert = true) {
             try {
                 const response = await fetch(SHEETS_URL + '?action=load');
                 if (response.ok) {
@@ -822,12 +822,14 @@
                     entries = data;
                     saveLocalData();
                     renderTable();
-                    alert('Data loaded from Google Sheets!');
+                    if (showAlert) alert('Data loaded from Google Sheets!');
                 } else {
-                    alert('Failed to load from Google Sheets');
+                    if (showAlert) alert('Failed to load from Google Sheets');
                 }
             } catch (e) {
-                alert('Load error: ' + e.message);
+                if (showAlert) alert('Load error: ' + e.message);
+                // Fall back to local data
+                loadLocalData();
             }
         }
 
@@ -867,8 +869,8 @@
             printWindow.print();
         }
 
-        // Initialize
-        loadLocalData();
+        // Initialize - auto-load from Google Sheets
+        loadFromSheets(false);
     </script>
 </body>
 </html>
