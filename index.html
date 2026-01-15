@@ -407,9 +407,10 @@
     <!-- HISTORY VIEW -->
     <div id="historyView" class="view">
         <div class="sync-btns">
-            <button class="btn" onclick="saveToSheets()">SAVE TO SHEETS</button>
-            <button class="btn" onclick="loadFromSheets()">LOAD FROM SHEETS</button>
+            <button class="btn" onclick="saveToSheets()">SAVE</button>
+            <button class="btn" onclick="loadFromSheets()">LOAD</button>
         </div>
+        <button class="btn" onclick="exportToOverall()" style="margin-bottom:10px;">EXPORT TO OVERALL</button>
         <input type="text" class="search-input" id="searchInput" placeholder="Search VIN..." oninput="searchHistory()">
         <div class="history-list" id="historyList"></div>
     </div>
@@ -704,6 +705,7 @@
 
             saveLocalData();
             renderTable();
+            saveToSheets(false); // Auto-save to Google Sheets
 
             // Reset code and spot only
             code = '';
@@ -804,13 +806,13 @@
         // Google Sheets sync
         const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbweDFahT4kc8mPWBHuNEECe6qZJHy9ljLYGqP-64g8nWvcpkQZvL738m7r9aAAsSeN5/exec';
 
-        async function saveToSheets() {
+        async function saveToSheets(showAlert = true) {
             try {
                 const url = SHEETS_URL + '?action=save&data=' + encodeURIComponent(JSON.stringify(entries));
                 const response = await fetch(url, { method: 'GET', mode: 'no-cors' });
-                alert('Data saved to Google Sheets!');
+                if (showAlert) alert('Data saved to Google Sheets!');
             } catch (e) {
-                alert('Save error: ' + e.message);
+                if (showAlert) alert('Save error: ' + e.message);
             }
         }
 
@@ -830,6 +832,23 @@
                 if (showAlert) alert('Load error: ' + e.message);
                 // Fall back to local data
                 loadLocalData();
+            }
+        }
+
+        async function exportToOverall() {
+            if (entries.length === 0) {
+                alert('No entries to export');
+                return;
+            }
+            try {
+                const url = SHEETS_URL + '?action=archive&data=' + encodeURIComponent(JSON.stringify(entries));
+                await fetch(url, { method: 'GET', mode: 'no-cors' });
+                entries = [];
+                saveLocalData();
+                renderTable();
+                alert('Exported to Overall and cleared today!');
+            } catch (e) {
+                alert('Export error: ' + e.message);
             }
         }
 
