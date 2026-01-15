@@ -99,91 +99,135 @@
             color: white;
         }
 
-        /* Collapsible sections */
-        .section {
+        /* Quick ADD layout */
+        .quick-pad {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 3px;
             margin-bottom: 10px;
-            border: 1px dashed black;
         }
 
-        .section-header {
-            padding: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            background: #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .section-content {
-            padding: 10px;
-            display: none;
-        }
-
-        .section-content.open {
-            display: block;
-        }
-
-        /* Grid layouts */
-        .compound-btns {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .row-btns {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-
-        .row-btn {
-            padding: 10px;
-            font-size: 14px;
+        .quick-pad button {
+            padding: 12px;
+            font-size: 16px;
             cursor: pointer;
             border: 1px solid black;
             background: white;
         }
 
-        .row-btn.active {
+        .compound-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .comp-btn {
+            padding: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid black;
+            background: white;
+        }
+
+        .comp-btn.active {
             background: black;
             color: white;
         }
 
-        .lane-controls {
+        .row-control {
             display: grid;
-            grid-template-columns: 1fr 1fr 2fr;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .numpad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 1fr 2fr 1fr;
             gap: 5px;
             margin-bottom: 10px;
         }
 
-        .numpad button {
-            padding: 20px;
-            font-size: 20px;
+        .ctrl-btn {
+            padding: 15px;
+            font-size: 24px;
+            font-weight: bold;
             cursor: pointer;
             border: 1px solid black;
             background: white;
         }
 
-        .letterpad {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 5px;
+        .row-display {
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            border: 1px dashed black;
+            font-family: monospace;
         }
 
-        .letterpad button {
-            padding: 12px;
+        .subrow-control {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .sub-btn {
+            padding: 10px;
             font-size: 14px;
             cursor: pointer;
             border: 1px solid black;
+            background: white;
+        }
+
+        .sub-btn.active {
+            background: black;
+            color: white;
+        }
+
+        .spot-control {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .spot-display {
+            padding: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            border: 1px dashed black;
+            font-family: monospace;
+        }
+
+        .spot-pad {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 3px;
+        }
+
+        .spot-pad button {
+            padding: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid black;
+            background: white;
+        }
+
+        .location-bar {
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            border: 1px dashed black;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid black;
             background: white;
         }
 
@@ -274,122 +318,80 @@
 
     <!-- ADD VIEW -->
     <div id="addView" class="view">
-        <!-- VIN Code Section -->
-        <div class="section">
-            <div class="section-header" onclick="toggleSection('vinSection')">
-                ENTER VIN CODE <span id="vinSectionArrow">+</span>
-            </div>
-            <div id="vinSection" class="section-content open">
-                <div class="display" id="codeDisplay">--------</div>
-                <div class="numpad">
-                    <button onclick="addDigit('1')">1</button>
-                    <button onclick="addDigit('2')">2</button>
-                    <button onclick="addDigit('3')">3</button>
-                    <button onclick="addDigit('4')">4</button>
-                    <button onclick="addDigit('5')">5</button>
-                    <button onclick="addDigit('6')">6</button>
-                    <button onclick="addDigit('7')">7</button>
-                    <button onclick="addDigit('8')">8</button>
-                    <button onclick="addDigit('9')">9</button>
-                    <button onclick="clearCode()">CLR</button>
-                    <button onclick="addDigit('0')">0</button>
-                    <button onclick="backspace()">DEL</button>
-                </div>
-                <div class="letterpad">
-                    <button onclick="addDigit('A')">A</button>
-                    <button onclick="addDigit('B')">B</button>
-                    <button onclick="addDigit('C')">C</button>
-                    <button onclick="addDigit('D')">D</button>
-                    <button onclick="addDigit('E')">E</button>
-                    <button onclick="addDigit('F')">F</button>
-                    <button onclick="addDigit('G')">G</button>
-                    <button onclick="addDigit('H')">H</button>
-                    <button onclick="addDigit('I')">I</button>
-                    <button onclick="addDigit('J')">J</button>
-                    <button onclick="addDigit('K')">K</button>
-                    <button onclick="addDigit('L')">L</button>
-                    <button onclick="addDigit('M')">M</button>
-                    <button onclick="addDigit('N')">N</button>
-                    <button onclick="addDigit('O')">O</button>
-                    <button onclick="addDigit('P')">P</button>
-                    <button onclick="addDigit('Q')">Q</button>
-                    <button onclick="addDigit('R')">R</button>
-                    <button onclick="addDigit('S')">S</button>
-                    <button onclick="addDigit('T')">T</button>
-                    <button onclick="addDigit('U')">U</button>
-                    <button onclick="addDigit('V')">V</button>
-                    <button onclick="addDigit('W')">W</button>
-                    <button onclick="addDigit('X')">X</button>
-                    <button onclick="addDigit('Y')">Y</button>
-                    <button onclick="addDigit('Z')">Z</button>
-                </div>
-            </div>
+        <!-- VIN Display -->
+        <div class="display" id="codeDisplay">--------</div>
+
+        <!-- Combined Numpad with Letters -->
+        <div class="quick-pad">
+            <button onclick="addDigit('1')">1</button>
+            <button onclick="addDigit('2')">2</button>
+            <button onclick="addDigit('3')">3</button>
+            <button onclick="addDigit('A')">A</button>
+            <button onclick="addDigit('B')">B</button>
+            <button onclick="addDigit('C')">C</button>
+            <button onclick="addDigit('4')">4</button>
+            <button onclick="addDigit('5')">5</button>
+            <button onclick="addDigit('6')">6</button>
+            <button onclick="addDigit('D')">D</button>
+            <button onclick="addDigit('E')">E</button>
+            <button onclick="addDigit('F')">F</button>
+            <button onclick="addDigit('7')">7</button>
+            <button onclick="addDigit('8')">8</button>
+            <button onclick="addDigit('9')">9</button>
+            <button onclick="addDigit('S')">S</button>
+            <button onclick="addDigit('T')">T</button>
+            <button onclick="addDigit('W')">W</button>
+            <button onclick="clearCode()">CLR</button>
+            <button onclick="addDigit('0')">0</button>
+            <button onclick="backspace()">DEL</button>
+            <button onclick="addDigit('X')">X</button>
+            <button onclick="addDigit('Y')">Y</button>
+            <button onclick="addDigit('Z')">Z</button>
         </div>
 
-        <!-- Compound Section -->
-        <div class="section">
-            <div class="section-header" onclick="toggleSection('compoundSection')">
-                SELECT COMPOUND <span id="compoundSectionArrow">+</span>
-            </div>
-            <div id="compoundSection" class="section-content">
-                <div class="compound-btns">
-                    <button class="btn" onclick="selectCompound('AB')">AB COMPOUND</button>
-                    <button class="btn" onclick="selectCompound('VAN')">VAN WORLD</button>
-                    <button class="btn" onclick="selectCompound('WAYNE')">WAYNE'S WORLD</button>
-                    <button class="btn" onclick="selectCompound('C1')">C1 COMPOUND</button>
-                </div>
-            </div>
+        <!-- Compound buttons - single row -->
+        <div class="compound-row">
+            <button class="comp-btn" onclick="selectCompound('AB')">AB</button>
+            <button class="comp-btn" onclick="selectCompound('VAN')">VAN</button>
+            <button class="comp-btn" onclick="selectCompound('WAYNE')">WW</button>
+            <button class="comp-btn" onclick="selectCompound('C1')">C1</button>
         </div>
 
-        <!-- Row Section -->
-        <div class="section">
-            <div class="section-header" onclick="toggleSection('rowSectionContent')">
-                SELECT ROW <span id="rowSectionContentArrow">+</span>
-            </div>
-            <div id="rowSectionContent" class="section-content">
-                <div class="row-btns" id="rowBtns"></div>
-                <div class="lane-controls">
-                    <button class="btn" onclick="laneUp()">UP</button>
-                    <button class="btn" onclick="laneDown()">DOWN</button>
-                    <button class="btn" onclick="clearLocation()">CLEAR</button>
-                </div>
-                <!-- Sub-row for C1 -->
-                <div id="subRowSection" style="display:none; margin-top:10px;">
-                    <div class="compound-btns">
-                        <button class="row-btn" onclick="selectSubRow('A')">A - FRONT</button>
-                        <button class="row-btn" onclick="selectSubRow('B')">B - BACK</button>
-                    </div>
-                </div>
-            </div>
+        <!-- Row display with UP/DOWN -->
+        <div class="row-control">
+            <button class="ctrl-btn" onclick="laneDown()">-</button>
+            <div class="row-display" id="rowDisplay">---</div>
+            <button class="ctrl-btn" onclick="laneUp()">+</button>
         </div>
 
-        <!-- Spot Section -->
-        <div class="section">
-            <div class="section-header" onclick="toggleSection('spotSection')">
-                ENTER SPOT <span id="spotSectionArrow">+</span>
-            </div>
-            <div id="spotSection" class="section-content">
-                <div class="display" id="spotDisplay">---</div>
-                <div class="numpad">
-                    <button onclick="addSpotDigit('1')">1</button>
-                    <button onclick="addSpotDigit('2')">2</button>
-                    <button onclick="addSpotDigit('3')">3</button>
-                    <button onclick="addSpotDigit('4')">4</button>
-                    <button onclick="addSpotDigit('5')">5</button>
-                    <button onclick="addSpotDigit('6')">6</button>
-                    <button onclick="addSpotDigit('7')">7</button>
-                    <button onclick="addSpotDigit('8')">8</button>
-                    <button onclick="addSpotDigit('9')">9</button>
-                    <button onclick="clearSpot()">CLR</button>
-                    <button onclick="addSpotDigit('0')">0</button>
-                    <button onclick="backspaceSpot()">DEL</button>
-                </div>
+        <!-- C1 Front/Back -->
+        <div class="subrow-control" id="subRowSection" style="display:none;">
+            <button class="sub-btn" onclick="selectSubRow('A')">FRONT</button>
+            <button class="sub-btn" onclick="selectSubRow('B')">BACK</button>
+        </div>
+
+        <!-- Spot display with quick entry -->
+        <div class="spot-control">
+            <div class="spot-display" id="spotDisplay">---</div>
+            <div class="spot-pad">
+                <button onclick="addSpotDigit('1')">1</button>
+                <button onclick="addSpotDigit('2')">2</button>
+                <button onclick="addSpotDigit('3')">3</button>
+                <button onclick="addSpotDigit('4')">4</button>
+                <button onclick="addSpotDigit('5')">5</button>
+                <button onclick="addSpotDigit('6')">6</button>
+                <button onclick="addSpotDigit('7')">7</button>
+                <button onclick="addSpotDigit('8')">8</button>
+                <button onclick="addSpotDigit('9')">9</button>
+                <button onclick="clearSpot()">C</button>
+                <button onclick="addSpotDigit('0')">0</button>
+                <button onclick="backspaceSpot()">←</button>
             </div>
         </div>
 
         <!-- Location Preview & Add -->
-        <div class="display" id="locationPreview">-</div>
-        <button class="btn" onclick="addEntry()">ADD ENTRY</button>
+        <div class="location-bar" id="locationPreview">-</div>
+        <button class="add-btn" onclick="addEntry()">ADD</button>
     </div>
 
     <!-- HISTORY VIEW -->
@@ -528,68 +530,68 @@
         // Compound selection
         function selectCompound(comp) {
             selectedCompound = comp;
-            selectedRow = '';
             selectedSubRow = '';
 
-            document.querySelectorAll('#compoundSection .btn').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent.includes(comp === 'VAN' ? 'VAN' : comp === 'WAYNE' ? 'WAYNE' : comp));
+            // Update compound buttons
+            document.querySelectorAll('.comp-btn').forEach(btn => {
+                const btnComp = btn.textContent === 'WW' ? 'WAYNE' : btn.textContent;
+                btn.classList.toggle('active', btnComp === comp);
             });
 
-            document.getElementById('subRowSection').style.display = compounds[comp].hasSubRow ? 'block' : 'none';
-            renderRowButtons(comp);
+            // Show/hide front/back for C1
+            document.getElementById('subRowSection').style.display = compounds[comp].hasSubRow ? 'grid' : 'none';
+
+            // Auto-select first row if none selected
+            if (!selectedRow || compounds[comp].rows.indexOf(selectedRow) === -1) {
+                selectedRow = compounds[comp].rows[0];
+            }
+            updateRowDisplay();
             updateLocationPreview();
         }
 
-        function renderRowButtons(comp) {
-            const container = document.getElementById('rowBtns');
-            container.innerHTML = '';
-            compounds[comp].rows.forEach(row => {
-                const btn = document.createElement('button');
-                btn.className = 'row-btn';
-                btn.textContent = row;
-                btn.onclick = () => selectRow(row);
-                container.appendChild(btn);
-            });
+        function updateRowDisplay() {
+            document.getElementById('rowDisplay').textContent = selectedRow || '---';
         }
 
         function selectRow(row) {
             selectedRow = row;
-            document.querySelectorAll('#rowBtns .row-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent === row);
-            });
+            updateRowDisplay();
             updateLocationPreview();
         }
 
         function selectSubRow(subRow) {
             selectedSubRow = subRow;
-            document.querySelectorAll('#subRowSection .row-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent.startsWith(subRow));
+            document.querySelectorAll('.sub-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent === (subRow === 'A' ? 'FRONT' : 'BACK'));
             });
             updateLocationPreview();
         }
 
         function laneUp() {
-            if (!selectedCompound || !selectedRow) return;
+            if (!selectedCompound) return;
             const rows = compounds[selectedCompound].rows;
             const idx = rows.indexOf(selectedRow);
-            if (idx > 0) selectRow(rows[idx - 1]);
+            if (idx < rows.length - 1) {
+                selectRow(rows[idx + 1]);
+            }
         }
 
         function laneDown() {
-            if (!selectedCompound || !selectedRow) return;
+            if (!selectedCompound) return;
             const rows = compounds[selectedCompound].rows;
             const idx = rows.indexOf(selectedRow);
-            if (idx < rows.length - 1) selectRow(rows[idx + 1]);
+            if (idx > 0) {
+                selectRow(rows[idx - 1]);
+            }
         }
 
         function clearLocation() {
             selectedCompound = '';
             selectedRow = '';
             selectedSubRow = '';
-            document.querySelectorAll('#compoundSection .btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('#rowBtns .row-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('#subRowSection .row-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('rowBtns').innerHTML = '';
+            document.querySelectorAll('.comp-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('rowDisplay').textContent = '---';
             document.getElementById('subRowSection').style.display = 'none';
             updateLocationPreview();
         }
