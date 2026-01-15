@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIN Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px dashed black;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .scanned {
+            background: green;
+            color: white;
+        }
+
+        td.clickable {
+            cursor: pointer;
+        }
+
+        .export-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #pdf-export {
+            padding: 20px;
+        }
+
+        #pdf-export table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #pdf-export th, #pdf-export td {
+            border: 1px dashed black;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <h1>VIN Tracker</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>IN</th>
+                <th>LOCATION</th>
+                <th>OUT</th>
+                <th>LOCATION</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="clickable">10:00 AM</td>
+                <td class="clickable">Warehouse A</td>
+                <td class="clickable">2:00 PM</td>
+                <td class="clickable">Dock 1</td>
+            </tr>
+            <tr>
+                <td class="clickable">11:30 AM</td>
+                <td class="clickable">Warehouse B</td>
+                <td class="clickable">3:30 PM</td>
+                <td class="clickable">Dock 2</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button class="export-btn" onclick="exportPDF()">Export to PDF</button>
+
+    <script>
+        // Toggle green highlight on tap - IN+LOCATION together, OUT+LOCATION together
+        document.querySelectorAll('td.clickable').forEach(cell => {
+            cell.addEventListener('click', function() {
+                const row = this.parentElement;
+                const cells = row.querySelectorAll('td');
+                const cellIndex = Array.from(cells).indexOf(this);
+
+                // If clicking IN (0) or its LOCATION (1), toggle both
+                if (cellIndex === 0 || cellIndex === 1) {
+                    cells[0].classList.toggle('scanned');
+                    cells[1].classList.toggle('scanned');
+                }
+                // If clicking OUT (2) or its LOCATION (3), toggle both
+                else if (cellIndex === 2 || cellIndex === 3) {
+                    cells[2].classList.toggle('scanned');
+                    cells[3].classList.toggle('scanned');
+                }
+            });
+        });
+
+        // Export table to PDF
+        function exportPDF() {
+            // Create a clean copy for PDF
+            const table = document.querySelector('table');
+            const pdfContent = document.createElement('div');
+            pdfContent.id = 'pdf-export';
+
+            // Add title with date in DD/MM/YYYY format
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const dateStr = day + '/' + month + '/' + year;
+
+            const title = document.createElement('h2');
+            title.textContent = 'PDI ' + dateStr;
+            title.style.textAlign = 'center';
+            title.style.marginBottom = '20px';
+            pdfContent.appendChild(title);
+
+            // Clone table and remove green highlighting
+            const tableClone = table.cloneNode(true);
+            tableClone.querySelectorAll('.scanned').forEach(cell => {
+                cell.classList.remove('scanned');
+            });
+            pdfContent.appendChild(tableClone);
+
+            // Temporarily add to document
+            document.body.appendChild(pdfContent);
+
+            // PDF options for landscape to fit columns nicely
+            const opt = {
+                margin: 10,
+                filename: 'vin-tracker-' + new Date().toISOString().split('T')[0] + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+
+            // Generate PDF
+            html2pdf().set(opt).from(pdfContent).save().then(() => {
+                // Remove temporary element
+                document.body.removeChild(pdfContent);
+            });
+        }
+    </script>
+</body>
+</html>
