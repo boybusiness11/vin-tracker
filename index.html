@@ -343,12 +343,17 @@
         <!-- Clear button -->
         <button class="btn" onclick="clearCode()" style="margin-bottom:10px;">CLEAR</button>
 
-        <!-- Compound buttons - single row -->
+        <!-- Compound buttons -->
         <div class="compound-row">
             <button class="comp-btn" onclick="selectCompound('AB')">AB</button>
             <button class="comp-btn" onclick="selectCompound('VAN')">VAN</button>
             <button class="comp-btn" onclick="selectCompound('WAYNE')">WW</button>
             <button class="comp-btn" onclick="selectCompound('C1')">C1</button>
+        </div>
+        <div class="compound-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:10px;">
+            <button class="comp-btn" onclick="selectCompound('WSB')">WS.B</button>
+            <button class="comp-btn" onclick="selectCompound('WSC')">WS.C</button>
+            <button class="comp-btn" onclick="selectCompound('EV')">EV</button>
         </div>
 
         <!-- Row display with UP/DOWN -->
@@ -431,7 +436,10 @@
             'AB': { rows: [], prefix: 'AB', spotMax: 300 },
             'VAN': { rows: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), prefix: 'AB', spotMax: 120 },
             'WAYNE': { rows: [], prefix: '', spotMax: 120 },
-            'C1': { rows: [], prefix: 'C1', spotMax: 120, hasSubRow: true }
+            'C1': { rows: [], prefix: 'C1', spotMax: 120, hasSubRow: true },
+            'WSB': { rows: ['B'], prefix: 'WS', spotMax: 0, noSpot: true },
+            'WSC': { rows: ['C'], prefix: 'WS', spotMax: 10 },
+            'EV': { rows: ['EV'], prefix: '', spotMax: 30 }
         };
 
         // Generate rows
@@ -508,14 +516,24 @@
             selectedCompound = comp;
             selectedSubRow = '';
 
+            // Map button text to compound names
+            const btnTextMap = {
+                'WW': 'WAYNE',
+                'WS.B': 'WSB',
+                'WS.C': 'WSC'
+            };
+
             // Update compound buttons
             document.querySelectorAll('.comp-btn').forEach(btn => {
-                const btnComp = btn.textContent === 'WW' ? 'WAYNE' : btn.textContent;
+                const btnComp = btnTextMap[btn.textContent] || btn.textContent;
                 btn.classList.toggle('active', btnComp === comp);
             });
 
             // Show/hide front/back for C1
             document.getElementById('subRowSection').style.display = compounds[comp].hasSubRow ? 'grid' : 'none';
+
+            // Show/hide spot input based on noSpot flag
+            document.getElementById('spotInput').style.display = compounds[comp].noSpot ? 'none' : 'block';
 
             // Auto-select first row if none selected
             if (!selectedRow || compounds[comp].rows.indexOf(selectedRow) === -1) {
@@ -585,6 +603,13 @@
                     location = selectedRow + '.' + spotStr;
                 } else if (selectedCompound === 'C1') {
                     location = 'C1.' + selectedRow + '.' + (selectedSubRow || '?') + '.' + spotStr;
+                } else if (selectedCompound === 'WSB') {
+                    location = 'WS.B';
+                } else if (selectedCompound === 'WSC') {
+                    location = 'WS.C.' + spotStr;
+                } else if (selectedCompound === 'EV') {
+                    const evSpot = spot ? spot.padStart(2, '0') : '__';
+                    location = 'EV.' + evSpot;
                 }
             }
 
@@ -597,8 +622,9 @@
                 alert('Please enter 8-digit code');
                 return;
             }
-            if (!selectedCompound || !selectedRow || !spot) {
-                alert('Please select compound, row and spot');
+            const needsSpot = !compounds[selectedCompound]?.noSpot;
+            if (!selectedCompound || !selectedRow || (needsSpot && !spot)) {
+                alert('Please select compound and location');
                 return;
             }
             if (selectedCompound === 'C1' && !selectedSubRow) {
