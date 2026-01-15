@@ -419,9 +419,9 @@
         // Location preview
         function updateLocationPreview() {
             let location = '-';
-            const spotStr = spot.padStart(3, '0');
+            const spotStr = spot ? spot.padStart(3, '0') : '___';
 
-            if (selectedCompound && selectedRow && spot) {
+            if (selectedCompound && selectedRow) {
                 if (selectedCompound === 'AB') {
                     location = 'AB.' + selectedRow + '.' + spotStr;
                 } else if (selectedCompound === 'VAN') {
