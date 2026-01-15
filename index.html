@@ -259,6 +259,27 @@
             text-transform: uppercase;
         }
 
+        .inout-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .inout-btn {
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid black;
+            background: white;
+        }
+
+        .inout-btn.active {
+            background: black;
+            color: white;
+        }
+
         /* Search */
         .search-input {
             width: 100%;
@@ -336,6 +357,12 @@
 
     <!-- ADD VIEW -->
     <div id="addView" class="view">
+        <!-- IN/OUT Toggle -->
+        <div class="inout-row">
+            <button class="inout-btn active" id="inBtn" onclick="selectInOut('IN')">IN</button>
+            <button class="inout-btn" id="outBtn" onclick="selectInOut('OUT')">OUT</button>
+        </div>
+
         <!-- VIN Input -->
         <input type="text" class="vin-input" id="codeInput" placeholder="TYPE VIN" maxlength="8"
                oninput="handleVinInput(this)" autocomplete="off" autocapitalize="characters">
@@ -409,6 +436,7 @@
         let selectedCompound = '';
         let selectedRow = '';
         let selectedSubRow = '';
+        let selectedInOut = 'IN';
         let entries = [];
         let allHistory = [];
 
@@ -509,6 +537,13 @@
 
         function updateSpotDisplay() {
             document.getElementById('spotInput').value = spot;
+        }
+
+        // IN/OUT selection
+        function selectInOut(type) {
+            selectedInOut = type;
+            document.getElementById('inBtn').classList.toggle('active', type === 'IN');
+            document.getElementById('outBtn').classList.toggle('active', type === 'OUT');
         }
 
         // Compound selection
@@ -633,18 +668,41 @@
             }
 
             const location = document.getElementById('locationPreview').textContent;
-            const entry = {
-                code: code,
-                inLocation: location,
-                outCode: '',
-                outLocation: '',
-                timestamp: new Date().toISOString(),
-                inScanned: false,
-                outScanned: false
-            };
 
-            entries.push(entry);
-            allHistory.push({ ...entry });
+            if (selectedInOut === 'IN') {
+                // Add new IN entry
+                const entry = {
+                    code: code,
+                    inLocation: location,
+                    outCode: '',
+                    outLocation: '',
+                    timestamp: new Date().toISOString(),
+                    inScanned: false,
+                    outScanned: false
+                };
+                entries.push(entry);
+                allHistory.push({ ...entry });
+            } else {
+                // Find existing entry and update OUT
+                const existingIndex = entries.findIndex(e => e.code === code && !e.outLocation);
+                if (existingIndex >= 0) {
+                    entries[existingIndex].outCode = code;
+                    entries[existingIndex].outLocation = location;
+                } else {
+                    // No matching IN entry, create new with OUT only
+                    const entry = {
+                        code: '',
+                        inLocation: '',
+                        outCode: code,
+                        outLocation: location,
+                        timestamp: new Date().toISOString(),
+                        inScanned: false,
+                        outScanned: false
+                    };
+                    entries.push(entry);
+                }
+            }
+
             saveLocalData();
             renderTable();
 
