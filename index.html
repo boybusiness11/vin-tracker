@@ -843,10 +843,7 @@
             try {
                 const url = SHEETS_URL + '?action=archive&data=' + encodeURIComponent(JSON.stringify(entries));
                 await fetch(url, { method: 'GET', mode: 'no-cors' });
-                entries = [];
-                saveLocalData();
-                renderTable();
-                alert('Exported to Overall and cleared today!');
+                alert('Exported to Overall!');
             } catch (e) {
                 alert('Export error: ' + e.message);
             }
