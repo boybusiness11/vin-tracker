@@ -876,8 +876,10 @@
             // Build print content
             let html = '<html><head><title>PDI ' + dateStr + '</title>';
             html += '<style>';
-            html += 'body { font-family: Arial, sans-serif; padding: 20px; }';
-            html += 'h2 { text-align: center; }';
+            html += '@page { size: auto; margin: 10mm; margin-header: 0; margin-footer: 0; }';
+            html += '@media print { @page { margin: 10mm; } }';
+            html += 'body { font-family: Arial, sans-serif; padding: 20px; -webkit-print-color-adjust: exact; }';
+            html += 'h2 { text-align: center; margin-top: 0; }';
             html += 'table { width: 100%; border-collapse: collapse; }';
             html += 'th, td { border: 1px solid black; padding: 8px; text-align: center; }';
             html += '</style></head><body>';
