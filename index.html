@@ -357,6 +357,20 @@
             <div class="row-display" id="rowDisplay">---</div>
             <button class="ctrl-btn" onclick="laneUp()">+</button>
         </div>
+
+        <!-- C1 Front/Back -->
+        <div class="subrow-control" id="subRowSection" style="display:none;">
+            <button class="sub-btn" onclick="selectSubRow('A')">FRONT</button>
+            <button class="sub-btn" onclick="selectSubRow('B')">BACK</button>
+        </div>
+
+        <!-- Position/Spot Input -->
+        <input type="text" class="vin-input" id="spotInput" placeholder="POSITION" maxlength="3"
+               oninput="handleSpotInput(this)" autocomplete="off" inputmode="numeric">
+
+        <!-- Location Preview & Add -->
+        <div class="location-bar" id="locationPreview">-</div>
+        <button class="add-btn" onclick="addEntry()">ADD</button>
     </div>
 
     <!-- HISTORY VIEW -->
@@ -473,12 +487,10 @@
         }
 
         // Spot functions
-        function addSpotDigit(d) {
-            if (spot.length < 3) {
-                spot += d;
-                updateSpotDisplay();
-                updateLocationPreview();
-            }
+        function handleSpotInput(input) {
+            spot = input.value.replace(/[^0-9]/g, '').slice(0, 3);
+            input.value = spot;
+            updateLocationPreview();
         }
 
         function clearSpot() {
@@ -487,14 +499,8 @@
             updateLocationPreview();
         }
 
-        function backspaceSpot() {
-            spot = spot.slice(0, -1);
-            updateSpotDisplay();
-            updateLocationPreview();
-        }
-
         function updateSpotDisplay() {
-            document.getElementById('spotDisplay').textContent = spot ? spot.padStart(3, '0') : '---';
+            document.getElementById('spotInput').value = spot;
         }
 
         // Compound selection
