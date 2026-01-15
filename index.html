@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VIN Tracker</title>
     <style>
         * {
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -14,6 +15,12 @@
             padding: 10px;
             padding-bottom: 80px;
             margin: 0;
+            touch-action: manipulation;
+        }
+
+        /* Prevent zoom on double tap */
+        button, input {
+            touch-action: manipulation;
         }
 
         h1, h3 {
@@ -241,6 +248,17 @@
             font-family: monospace;
         }
 
+        .vin-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 24px;
+            text-align: center;
+            border: 1px dashed black;
+            margin-bottom: 10px;
+            font-family: monospace;
+            text-transform: uppercase;
+        }
+
         /* Search */
         .search-input {
             width: 100%;
@@ -318,8 +336,9 @@
 
     <!-- ADD VIEW -->
     <div id="addView" class="view">
-        <!-- VIN Display -->
-        <div class="display" id="codeDisplay">--------</div>
+        <!-- VIN Input -->
+        <input type="text" class="vin-input" id="codeInput" placeholder="TYPE VIN" maxlength="8"
+               oninput="handleVinInput(this)" autocomplete="off" autocapitalize="characters">
 
         <!-- Combined Numpad with Letters -->
         <div class="quick-pad">
@@ -481,6 +500,11 @@
         }
 
         // VIN Code functions
+        function handleVinInput(input) {
+            code = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+            input.value = code;
+        }
+
         function addDigit(d) {
             if (code.length < 8) {
                 code += d;
@@ -499,7 +523,7 @@
         }
 
         function updateCodeDisplay() {
-            document.getElementById('codeDisplay').textContent = code.padEnd(8, '-');
+            document.getElementById('codeInput').value = code;
         }
 
         // Spot functions
