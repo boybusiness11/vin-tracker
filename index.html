@@ -340,33 +340,8 @@
         <input type="text" class="vin-input" id="codeInput" placeholder="TYPE VIN" maxlength="8"
                oninput="handleVinInput(this)" autocomplete="off" autocapitalize="characters">
 
-        <!-- Combined Numpad with Letters -->
-        <div class="quick-pad">
-            <button onclick="addDigit('1')">1</button>
-            <button onclick="addDigit('2')">2</button>
-            <button onclick="addDigit('3')">3</button>
-            <button onclick="addDigit('A')">A</button>
-            <button onclick="addDigit('B')">B</button>
-            <button onclick="addDigit('C')">C</button>
-            <button onclick="addDigit('4')">4</button>
-            <button onclick="addDigit('5')">5</button>
-            <button onclick="addDigit('6')">6</button>
-            <button onclick="addDigit('D')">D</button>
-            <button onclick="addDigit('E')">E</button>
-            <button onclick="addDigit('F')">F</button>
-            <button onclick="addDigit('7')">7</button>
-            <button onclick="addDigit('8')">8</button>
-            <button onclick="addDigit('9')">9</button>
-            <button onclick="addDigit('S')">S</button>
-            <button onclick="addDigit('T')">T</button>
-            <button onclick="addDigit('W')">W</button>
-            <button onclick="clearCode()">CLR</button>
-            <button onclick="addDigit('0')">0</button>
-            <button onclick="backspace()">DEL</button>
-            <button onclick="addDigit('X')">X</button>
-            <button onclick="addDigit('Y')">Y</button>
-            <button onclick="addDigit('Z')">Z</button>
-        </div>
+        <!-- Clear button -->
+        <button class="btn" onclick="clearCode()" style="margin-bottom:10px;">CLEAR</button>
 
         <!-- Compound buttons - single row -->
         <div class="compound-row">
@@ -382,35 +357,6 @@
             <div class="row-display" id="rowDisplay">---</div>
             <button class="ctrl-btn" onclick="laneUp()">+</button>
         </div>
-
-        <!-- C1 Front/Back -->
-        <div class="subrow-control" id="subRowSection" style="display:none;">
-            <button class="sub-btn" onclick="selectSubRow('A')">FRONT</button>
-            <button class="sub-btn" onclick="selectSubRow('B')">BACK</button>
-        </div>
-
-        <!-- Spot display with quick entry -->
-        <div class="spot-control">
-            <div class="spot-display" id="spotDisplay">---</div>
-            <div class="spot-pad">
-                <button onclick="addSpotDigit('1')">1</button>
-                <button onclick="addSpotDigit('2')">2</button>
-                <button onclick="addSpotDigit('3')">3</button>
-                <button onclick="addSpotDigit('4')">4</button>
-                <button onclick="addSpotDigit('5')">5</button>
-                <button onclick="addSpotDigit('6')">6</button>
-                <button onclick="addSpotDigit('7')">7</button>
-                <button onclick="addSpotDigit('8')">8</button>
-                <button onclick="addSpotDigit('9')">9</button>
-                <button onclick="clearSpot()">C</button>
-                <button onclick="addSpotDigit('0')">0</button>
-                <button onclick="backspaceSpot()">←</button>
-            </div>
-        </div>
-
-        <!-- Location Preview & Add -->
-        <div class="location-bar" id="locationPreview">-</div>
-        <button class="add-btn" onclick="addEntry()">ADD</button>
     </div>
 
     <!-- HISTORY VIEW -->
