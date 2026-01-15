@@ -404,7 +404,7 @@
 
     <!-- BARCODE VIEW -->
     <div id="barcodeView" class="view">
-        <h3>Select VIN to generate barcode</h3>
+        <h3>Unscanned VINs</h3>
         <div class="barcode-list" id="barcodeList"></div>
     </div>
 
@@ -704,17 +704,26 @@
             });
         }
 
-        // Barcodes
+        // Barcodes - only show unscanned entries
         function renderBarcodes() {
             const list = document.getElementById('barcodeList');
             list.innerHTML = '';
 
-            entries.forEach((entry, index) => {
+            // Filter to only show entries not yet scanned
+            const unscanned = entries.filter(e => !e.inScanned);
+
+            if (unscanned.length === 0) {
+                list.innerHTML = '<p>No unscanned VINs</p>';
+                return;
+            }
+
+            unscanned.forEach((entry, index) => {
                 const item = document.createElement('div');
                 item.className = 'barcode-item';
                 item.innerHTML = `
-                    <p><strong>${entry.code}</strong></p>
                     <svg id="barcode-${index}"></svg>
+                    <p><strong>VIN:</strong> ${entry.code}</p>
+                    <p><strong>LOCATION:</strong> ${entry.inLocation}</p>
                 `;
                 list.appendChild(item);
 
@@ -723,7 +732,7 @@
                         format: 'CODE128',
                         width: 2,
                         height: 50,
-                        displayValue: true
+                        displayValue: false
                     });
                 } catch (e) {
                     console.error('Barcode error:', e);
