@@ -332,7 +332,6 @@
             text-align: center;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 </head>
 <body>
@@ -854,38 +853,40 @@
             }
         }
 
-        // Export PDF
+        // Export PDF using print
         function exportPDF() {
-            const table = document.querySelector('#trackView table');
-            const pdfContent = document.createElement('div');
-            pdfContent.id = 'pdf-export';
-
             const now = new Date();
             const dateStr = String(now.getDate()).padStart(2, '0') + '/' +
                            String(now.getMonth() + 1).padStart(2, '0') + '/' +
                            now.getFullYear();
 
-            const title = document.createElement('h2');
-            title.textContent = 'PDI ' + dateStr;
-            title.style.textAlign = 'center';
-            title.style.marginBottom = '20px';
-            pdfContent.appendChild(title);
+            // Build print content
+            let html = '<html><head><title>PDI ' + dateStr + '</title>';
+            html += '<style>';
+            html += 'body { font-family: Arial, sans-serif; padding: 20px; }';
+            html += 'h2 { text-align: center; }';
+            html += 'table { width: 100%; border-collapse: collapse; }';
+            html += 'th, td { border: 1px solid black; padding: 8px; text-align: center; }';
+            html += '</style></head><body>';
+            html += '<h2>PDI ' + dateStr + '</h2>';
+            html += '<table><thead><tr><th>IN</th><th>LOCATION</th><th>OUT</th><th>LOCATION</th></tr></thead><tbody>';
 
-            const tableClone = table.cloneNode(true);
-            tableClone.querySelectorAll('.scanned').forEach(cell => cell.classList.remove('scanned'));
-            pdfContent.appendChild(tableClone);
-
-            document.body.appendChild(pdfContent);
-
-            html2pdf().set({
-                margin: 10,
-                filename: 'vin-tracker-' + now.toISOString().split('T')[0] + '.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-            }).from(pdfContent).save().then(() => {
-                document.body.removeChild(pdfContent);
+            entries.forEach(entry => {
+                html += '<tr>';
+                html += '<td>' + (entry.code || '') + '</td>';
+                html += '<td>' + (entry.inLocation || '') + '</td>';
+                html += '<td>' + (entry.outCode || '') + '</td>';
+                html += '<td>' + (entry.outLocation || '') + '</td>';
+                html += '</tr>';
             });
+
+            html += '</tbody></table></body></html>';
+
+            // Open print window
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(html);
+            printWindow.document.close();
+            printWindow.print();
         }
 
         // Initialize
