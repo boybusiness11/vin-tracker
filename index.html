@@ -91,6 +91,13 @@
             cursor: pointer;
         }
 
+        .delete-btn {
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+            padding: 10px;
+        }
+
         /* Buttons */
         .btn {
             padding: 15px;
@@ -727,9 +734,19 @@
                     <td class="clickable ${entry.inScanned ? 'scanned' : ''}" onclick="toggleScan(${index}, 'in')">${entry.inLocation}</td>
                     <td class="clickable ${entry.outScanned ? 'scanned' : ''}" onclick="toggleScan(${index}, 'out')">${entry.outCode}</td>
                     <td class="clickable ${entry.outScanned ? 'scanned' : ''}" onclick="toggleScan(${index}, 'out')">${entry.outLocation}</td>
+                    <td class="delete-btn" onclick="deleteEntry(${index})">X</td>
                 `;
                 tbody.appendChild(row);
             });
+        }
+
+        function deleteEntry(index) {
+            if (confirm('Delete this entry?')) {
+                entries.splice(index, 1);
+                saveLocalData();
+                renderTable();
+                saveToSheets(false);
+            }
         }
 
         function toggleScan(index, type) {
