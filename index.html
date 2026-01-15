@@ -407,8 +407,8 @@
     <!-- HISTORY VIEW -->
     <div id="historyView" class="view">
         <div class="sync-btns">
-            <button class="btn" onclick="syncToGitHub()">SYNC TO GITHUB</button>
-            <button class="btn" onclick="loadFromGitHub()">LOAD FROM GITHUB</button>
+            <button class="btn" onclick="saveToSheets()">SAVE TO SHEETS</button>
+            <button class="btn" onclick="loadFromSheets()">LOAD FROM SHEETS</button>
         </div>
         <input type="text" class="search-input" id="searchInput" placeholder="Search VIN..." oninput="searchHistory()">
         <div class="history-list" id="historyList"></div>
@@ -801,52 +801,30 @@
             });
         }
 
-        // GitHub sync
-        async function syncToGitHub() {
-            const data = {
-                entries: entries,
-                history: allHistory,
-                lastSync: new Date().toISOString()
-            };
+        // Google Sheets sync
+        const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwYdzCPlaonVHO5ctQBnvbQ_LkqrxLn-im7unn9Y_xRaIlc3sZlma7rBWN_hO9aTcoD/exec';
 
+        async function saveToSheets() {
             try {
-                // Create or update data.json in repo
-                const content = btoa(JSON.stringify(data, null, 2));
-
-                // Check if file exists
-                let sha = '';
-                try {
-                    const existing = await fetch('https://api.github.com/repos/boybusiness11/vin-tracker/contents/data.json');
-                    if (existing.ok) {
-                        const json = await existing.json();
-                        sha = json.sha;
-                    }
-                } catch (e) {}
-
-                const body = {
-                    message: 'Sync VIN data ' + new Date().toISOString(),
-                    content: content
-                };
-                if (sha) body.sha = sha;
-
-                alert('To sync, run this in terminal:\ngh api repos/boybusiness11/vin-tracker/contents/data.json -X PUT -f message="Sync" -f content="' + content + '"' + (sha ? ' -f sha="' + sha + '"' : ''));
+                const url = SHEETS_URL + '?action=save&data=' + encodeURIComponent(JSON.stringify(entries));
+                const response = await fetch(url, { method: 'GET', mode: 'no-cors' });
+                alert('Data saved to Google Sheets!');
             } catch (e) {
-                alert('Sync error: ' + e.message);
+                alert('Save error: ' + e.message);
             }
         }
 
-        async function loadFromGitHub() {
+        async function loadFromSheets() {
             try {
-                const response = await fetch('https://raw.githubusercontent.com/boybusiness11/vin-tracker/main/data.json?' + Date.now());
+                const response = await fetch(SHEETS_URL + '?action=load');
                 if (response.ok) {
                     const data = await response.json();
-                    entries = data.entries || [];
-                    allHistory = data.history || [];
+                    entries = data;
                     saveLocalData();
                     renderTable();
-                    alert('Data loaded from GitHub!');
+                    alert('Data loaded from Google Sheets!');
                 } else {
-                    alert('No data.json found in GitHub repo');
+                    alert('Failed to load from Google Sheets');
                 }
             } catch (e) {
                 alert('Load error: ' + e.message);
