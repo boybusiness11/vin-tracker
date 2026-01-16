@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,903 +11,1071 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            padding: 10px;
-            padding-bottom: 80px;
-            margin: 0;
-            touch-action: manipulation;
-        }
+```
+    body {
+        font-family: Arial, sans-serif;
+        padding: 10px;
+        padding-bottom: 80px;
+        margin: 0;
+        touch-action: manipulation;
+    }
 
-        /* Prevent zoom on double tap */
-        button, input {
-            touch-action: manipulation;
-        }
+    /* Prevent zoom on double tap */
+    button, input {
+        touch-action: manipulation;
+    }
 
-        h1, h3 {
-            text-align: center;
-            margin: 10px 0;
-        }
+    h1, h3 {
+        text-align: center;
+        margin: 10px 0;
+    }
 
-        /* Navigation */
-        .nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            background: white;
-            border-top: 2px solid black;
-        }
+    /* Navigation */
+    .nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        background: white;
+        border-top: 2px solid black;
+    }
 
-        .nav-btn {
-            padding: 15px;
-            font-size: 14px;
-            font-weight: bold;
-            text-align: center;
-            cursor: pointer;
-            border: none;
-            border-right: 1px solid black;
-            background: white;
-        }
+    .nav-btn {
+        padding: 15px;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        cursor: pointer;
+        border: none;
+        border-right: 1px solid black;
+        background: white;
+    }
 
-        .nav-btn:last-child {
-            border-right: none;
-        }
+    .nav-btn:last-child {
+        border-right: none;
+    }
 
-        .nav-btn.active {
-            background: black;
-            color: white;
-        }
+    .nav-btn.active {
+        background: black;
+        color: white;
+    }
 
-        /* Views */
-        .view {
-            display: none;
-        }
+    /* Views */
+    .view {
+        display: none;
+    }
 
-        .view.active {
-            display: block;
-        }
+    .view.active {
+        display: block;
+    }
 
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-        }
+    /* Table */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+    }
 
-        th, td {
-            border: 1px dashed black;
-            padding: 10px;
-            text-align: center;
-        }
+    th, td {
+        border: 1px dashed black;
+        padding: 10px;
+        text-align: center;
+    }
 
-        .scanned {
-            background: green;
-            color: white;
-        }
+    .scanned {
+        background: green;
+        color: white;
+    }
 
-        td.clickable {
-            cursor: pointer;
-        }
+    td.clickable {
+        cursor: pointer;
+    }
 
-        .delete-btn {
-            cursor: pointer;
-            color: red;
-            font-weight: bold;
-            padding: 10px;
-        }
+    .delete-btn {
+        cursor: pointer;
+        color: red;
+        font-weight: bold;
+        padding: 10px;
+    }
 
-        /* Buttons */
-        .btn {
-            padding: 15px;
-            font-size: 16px;
-            cursor: pointer;
-            border: 1px solid black;
-            background: white;
-            width: 100%;
-        }
+    .edit-btn {
+        cursor: pointer;
+        color: blue;
+        font-weight: bold;
+        padding: 10px;
+    }
 
-        .btn.active {
-            background: black;
-            color: white;
-        }
+    /* Edit Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
 
-        /* Quick ADD layout */
-        .quick-pad {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 3px;
-            margin-bottom: 10px;
-        }
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 5px;
+        width: 90%;
+        max-width: 400px;
+    }
 
-        .quick-pad button {
-            padding: 12px;
-            font-size: 16px;
-            cursor: pointer;
-            border: 1px solid black;
-            background: white;
-        }
+    .modal-content h3 {
+        margin-top: 0;
+    }
 
-        .compound-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-            margin-bottom: 10px;
-        }
+    .modal-content label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+    }
 
-        .comp-btn {
-            padding: 12px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            border: 1px solid black;
-            background: white;
-        }
+    .modal-content input {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid black;
+        margin-top: 5px;
+        text-transform: uppercase;
+    }
 
-        .comp-btn.active {
-            background: black;
-            color: white;
-        }
+    .modal-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 15px;
+    }
 
-        .row-control {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
+    .modal-buttons button {
+        padding: 12px;
+        font-size: 16px;
+        cursor: pointer;
+        border: 1px solid black;
+    }
 
-        .ctrl-btn {
-            padding: 15px;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            border: 1px solid black;
-            background: white;
-        }
+    .swap-btn {
+        grid-column: 1 / -1;
+        background: #f0f0f0;
+    }
 
-        .row-display {
-            padding: 15px;
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            border: 1px dashed black;
-            font-family: monospace;
-        }
+    /* Buttons */
+    .btn {
+        padding: 15px;
+        font-size: 16px;
+        cursor: pointer;
+        border: 1px solid black;
+        background: white;
+        width: 100%;
+    }
 
-        .subrow-control {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
+    .btn.active {
+        background: black;
+        color: white;
+    }
 
-        .sub-btn {
-            padding: 10px;
-            font-size: 14px;
-            cursor: pointer;
-            border: 1px solid black;
-            background: white;
-        }
+    /* Quick ADD layout */
+    .quick-pad {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 3px;
+        margin-bottom: 10px;
+    }
 
-        .sub-btn.active {
-            background: black;
-            color: white;
-        }
+    .quick-pad button {
+        padding: 12px;
+        font-size: 16px;
+        cursor: pointer;
+        border: 1px solid black;
+        background: white;
+    }
 
-        .spot-control {
-            display: grid;
-            grid-template-columns: 1fr 3fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
+    .compound-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+        margin-bottom: 10px;
+    }
 
-        .spot-display {
-            padding: 15px;
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
-            border: 1px dashed black;
-            font-family: monospace;
-        }
+    .comp-btn {
+        padding: 12px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        border: 1px solid black;
+        background: white;
+    }
 
-        .spot-pad {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 3px;
-        }
+    .comp-btn.active {
+        background: black;
+        color: white;
+    }
 
-        .spot-pad button {
-            padding: 10px;
-            font-size: 14px;
-            cursor: pointer;
-            border: 1px solid black;
-            background: white;
-        }
+    .row-control {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+        gap: 5px;
+        margin-bottom: 10px;
+    }
 
-        .location-bar {
-            padding: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-            border: 1px dashed black;
-            margin-bottom: 10px;
-            font-family: monospace;
-        }
+    .ctrl-btn {
+        padding: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        border: 1px solid black;
+        background: white;
+    }
 
-        .add-btn {
-            width: 100%;
-            padding: 20px;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            border: 2px solid black;
-            background: white;
-        }
+    .row-display {
+        padding: 15px;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        border: 1px dashed black;
+        font-family: monospace;
+    }
 
-        .display {
-            width: 100%;
-            padding: 15px;
-            font-size: 24px;
-            text-align: center;
-            border: 1px dashed black;
-            margin-bottom: 10px;
-            font-family: monospace;
-        }
+    .subrow-control {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+        margin-bottom: 10px;
+    }
 
-        .vin-input {
-            width: 100%;
-            padding: 15px;
-            font-size: 24px;
-            text-align: center;
-            border: 1px dashed black;
-            margin-bottom: 10px;
-            font-family: monospace;
-            text-transform: uppercase;
-        }
+    .sub-btn {
+        padding: 10px;
+        font-size: 14px;
+        cursor: pointer;
+        border: 1px solid black;
+        background: white;
+    }
 
-        .inout-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
+    .sub-btn.active {
+        background: black;
+        color: white;
+    }
 
-        .inout-btn {
-            padding: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            border: 2px solid black;
-            background: white;
-        }
+    .spot-control {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
 
-        .inout-btn.active {
-            background: black;
-            color: white;
-        }
+    .spot-display {
+        padding: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        border: 1px dashed black;
+        font-family: monospace;
+    }
 
-        /* Search */
-        .search-input {
-            width: 100%;
-            padding: 15px;
-            font-size: 16px;
-            border: 1px solid black;
-            margin-bottom: 10px;
-        }
+    .spot-pad {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 3px;
+    }
 
-        .history-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
+    .spot-pad button {
+        padding: 10px;
+        font-size: 14px;
+        cursor: pointer;
+        border: 1px solid black;
+        background: white;
+    }
 
-        .history-item {
-            padding: 10px;
-            border-bottom: 1px dashed black;
-        }
+    .location-bar {
+        padding: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        border: 1px dashed black;
+        margin-bottom: 10px;
+        font-family: monospace;
+    }
 
-        /* Barcode */
-        .barcode-list {
-            text-align: center;
-        }
+    .add-btn {
+        width: 100%;
+        padding: 20px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        border: 2px solid black;
+        background: white;
+    }
 
-        .barcode-item {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px dashed black;
-        }
+    .display {
+        width: 100%;
+        padding: 15px;
+        font-size: 24px;
+        text-align: center;
+        border: 1px dashed black;
+        margin-bottom: 10px;
+        font-family: monospace;
+    }
 
-        .sync-btns {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
+    .vin-input {
+        width: 100%;
+        padding: 15px;
+        font-size: 24px;
+        text-align: center;
+        border: 1px dashed black;
+        margin-bottom: 10px;
+        font-family: monospace;
+        text-transform: uppercase;
+    }
 
-        #pdf-export {
-            padding: 20px;
-        }
+    .inout-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+        margin-bottom: 10px;
+    }
 
-        #pdf-export table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    .inout-btn {
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        border: 2px solid black;
+        background: white;
+    }
 
-        #pdf-export th, #pdf-export td {
-            border: 1px dashed black;
-            padding: 10px;
-            text-align: center;
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    .inout-btn.active {
+        background: black;
+        color: white;
+    }
+
+    /* Search */
+    .search-input {
+        width: 100%;
+        padding: 15px;
+        font-size: 16px;
+        border: 1px solid black;
+        margin-bottom: 10px;
+    }
+
+    .history-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .history-item {
+        padding: 10px;
+        border-bottom: 1px dashed black;
+    }
+
+    /* Barcode */
+    .barcode-list {
+        text-align: center;
+    }
+
+    .barcode-item {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px dashed black;
+    }
+
+    .sync-btns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    #pdf-export {
+        padding: 20px;
+    }
+
+    #pdf-export table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #pdf-export th, #pdf-export td {
+        border: 1px dashed black;
+        padding: 10px;
+        text-align: center;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+```
+
 </head>
 <body>
     <h1>VIN Tracker</h1>
 
-    <!-- TRACK VIEW -->
-    <div id="trackView" class="view active">
-        <table>
-            <thead>
-                <tr>
-                    <th>IN</th>
-                    <th>LOCATION</th>
-                    <th>OUT</th>
-                    <th>LOCATION</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-            </tbody>
-        </table>
-        <button class="btn" onclick="exportPDF()">Export to PDF</button>
+```
+<!-- TRACK VIEW -->
+<div id="trackView" class="view active">
+    <table>
+        <thead>
+            <tr>
+                <th>IN</th>
+                <th>LOCATION</th>
+                <th>OUT</th>
+                <th>LOCATION</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+    <button class="btn" onclick="exportPDF()">Export to PDF</button>
+</div>
+
+<!-- ADD VIEW -->
+<div id="addView" class="view">
+    <!-- IN/OUT Toggle -->
+    <div class="inout-row">
+        <button class="inout-btn active" id="inBtn" onclick="selectInOut('IN')">IN</button>
+        <button class="inout-btn" id="outBtn" onclick="selectInOut('OUT')">OUT</button>
     </div>
 
-    <!-- ADD VIEW -->
-    <div id="addView" class="view">
-        <!-- IN/OUT Toggle -->
-        <div class="inout-row">
-            <button class="inout-btn active" id="inBtn" onclick="selectInOut('IN')">IN</button>
-            <button class="inout-btn" id="outBtn" onclick="selectInOut('OUT')">OUT</button>
-        </div>
+    <!-- VIN Input -->
+    <input type="text" class="vin-input" id="codeInput" placeholder="TYPE VIN" maxlength="8"
+           oninput="handleVinInput(this)" autocomplete="off" autocapitalize="characters">
 
-        <!-- VIN Input -->
-        <input type="text" class="vin-input" id="codeInput" placeholder="TYPE VIN" maxlength="8"
-               oninput="handleVinInput(this)" autocomplete="off" autocapitalize="characters">
+    <!-- Clear button -->
+    <button class="btn" onclick="clearCode()" style="margin-bottom:10px;">CLEAR</button>
 
-        <!-- Clear button -->
-        <button class="btn" onclick="clearCode()" style="margin-bottom:10px;">CLEAR</button>
-
-        <!-- Compound buttons -->
-        <div class="compound-row">
-            <button class="comp-btn" onclick="selectCompound('AB')">AB</button>
-            <button class="comp-btn" onclick="selectCompound('VAN')">VAN</button>
-            <button class="comp-btn" onclick="selectCompound('WAYNE')">WW</button>
-            <button class="comp-btn" onclick="selectCompound('C1')">C1</button>
-        </div>
-        <div class="compound-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:10px;">
-            <button class="comp-btn" onclick="selectCompound('WSB')">WS.B</button>
-            <button class="comp-btn" onclick="selectCompound('WSC')">WS.C</button>
-            <button class="comp-btn" onclick="selectCompound('EV')">EV</button>
-        </div>
-
-        <!-- Row display with UP/DOWN -->
-        <div class="row-control">
-            <button class="ctrl-btn" onclick="laneDown()">-</button>
-            <div class="row-display" id="rowDisplay">---</div>
-            <button class="ctrl-btn" onclick="laneUp()">+</button>
-        </div>
-
-        <!-- C1 Front/Back -->
-        <div class="subrow-control" id="subRowSection" style="display:none;">
-            <button class="sub-btn" onclick="selectSubRow('A')">FRONT</button>
-            <button class="sub-btn" onclick="selectSubRow('B')">BACK</button>
-        </div>
-
-        <!-- Position/Spot Input -->
-        <input type="text" class="vin-input" id="spotInput" placeholder="POSITION" maxlength="3"
-               oninput="handleSpotInput(this)" autocomplete="off" inputmode="numeric">
-
-        <!-- Location Preview & Add -->
-        <div class="location-bar" id="locationPreview">-</div>
-        <button class="add-btn" onclick="addEntry()">ADD</button>
+    <!-- Compound buttons -->
+    <div class="compound-row">
+        <button class="comp-btn" onclick="selectCompound('AB')">AB</button>
+        <button class="comp-btn" onclick="selectCompound('VAN')">VAN</button>
+        <button class="comp-btn" onclick="selectCompound('WAYNE')">WW</button>
+        <button class="comp-btn" onclick="selectCompound('C1')">C1</button>
+    </div>
+    <div class="compound-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:10px;">
+        <button class="comp-btn" onclick="selectCompound('WSB')">WS.B</button>
+        <button class="comp-btn" onclick="selectCompound('WSC')">WS.C</button>
+        <button class="comp-btn" onclick="selectCompound('EV')">EV</button>
     </div>
 
-    <!-- HISTORY VIEW -->
-    <div id="historyView" class="view">
-        <div class="sync-btns">
-            <button class="btn" onclick="saveToSheets()">SAVE</button>
-            <button class="btn" onclick="loadFromSheets()">LOAD</button>
+    <!-- Row display with UP/DOWN -->
+    <div class="row-control">
+        <button class="ctrl-btn" onclick="laneDown()">-</button>
+        <div class="row-display" id="rowDisplay">---</div>
+        <button class="ctrl-btn" onclick="laneUp()">+</button>
+    </div>
+
+    <!-- C1 Front/Back -->
+    <div class="subrow-control" id="subRowSection" style="display:none;">
+        <button class="sub-btn" onclick="selectSubRow('A')">FRONT</button>
+        <button class="sub-btn" onclick="selectSubRow('B')">BACK</button>
+    </div>
+
+    <!-- Position/Spot Input -->
+    <input type="text" class="vin-input" id="spotInput" placeholder="POSITION" maxlength="3"
+           oninput="handleSpotInput(this)" autocomplete="off" inputmode="numeric">
+
+    <!-- Location Preview & Add -->
+    <div class="location-bar" id="locationPreview">-</div>
+    <button class="add-btn" onclick="addEntry()">ADD</button>
+</div>
+
+<!-- HISTORY VIEW -->
+<div id="historyView" class="view">
+    <div class="sync-btns">
+        <button class="btn" onclick="saveToSheets()">SAVE</button>
+        <button class="btn" onclick="loadFromSheets()">LOAD</button>
+    </div>
+    <button class="btn" onclick="exportToOverall()" style="margin-bottom:10px;">EXPORT TO OVERALL</button>
+    <input type="text" class="search-input" id="searchInput" placeholder="Search VIN..." oninput="searchHistory()">
+    <div class="history-list" id="historyList"></div>
+</div>
+
+<!-- BARCODE VIEW -->
+<div id="barcodeView" class="view">
+    <h3>Unscanned VINs</h3>
+    <div class="barcode-list" id="barcodeList"></div>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h3>Edit Entry</h3>
+        <label>IN Code:</label>
+        <input type="text" id="editInCode" maxlength="8">
+        <label>IN Location:</label>
+        <input type="text" id="editInLocation">
+        <label>OUT Code:</label>
+        <input type="text" id="editOutCode" maxlength="8">
+        <label>OUT Location:</label>
+        <input type="text" id="editOutLocation">
+        <div class="modal-buttons">
+            <button onclick="closeEditModal()">CANCEL</button>
+            <button onclick="saveEdit()" style="background:black;color:white;">SAVE</button>
+            <button class="swap-btn" onclick="swapInOut()">⇄ SWAP IN/OUT</button>
         </div>
-        <button class="btn" onclick="exportToOverall()" style="margin-bottom:10px;">EXPORT TO OVERALL</button>
-        <input type="text" class="search-input" id="searchInput" placeholder="Search VIN..." oninput="searchHistory()">
-        <div class="history-list" id="historyList"></div>
     </div>
+</div>
 
-    <!-- BARCODE VIEW -->
-    <div id="barcodeView" class="view">
-        <h3>Unscanned VINs</h3>
-        <div class="barcode-list" id="barcodeList"></div>
-    </div>
+<!-- NAVIGATION -->
+<nav class="nav">
+    <button class="nav-btn active" onclick="showView('track')">TRACK</button>
+    <button class="nav-btn" onclick="showView('add')">ADD</button>
+    <button class="nav-btn" onclick="showView('history')">HISTORY</button>
+    <button class="nav-btn" onclick="showView('barcode')">BARCODE</button>
+</nav>
 
-    <!-- NAVIGATION -->
-    <nav class="nav">
-        <button class="nav-btn active" onclick="showView('track')">TRACK</button>
-        <button class="nav-btn" onclick="showView('add')">ADD</button>
-        <button class="nav-btn" onclick="showView('history')">HISTORY</button>
-        <button class="nav-btn" onclick="showView('barcode')">BARCODE</button>
-    </nav>
+<script>
+    // State
+    let code = '';
+    let spot = '';
+    let selectedCompound = '';
+    let selectedRow = '';
+    let selectedSubRow = '';
+    let selectedInOut = 'IN';
+    let entries = [];
+    let allHistory = [];
 
-    <script>
-        // State
-        let code = '';
-        let spot = '';
-        let selectedCompound = '';
-        let selectedRow = '';
-        let selectedSubRow = '';
-        let selectedInOut = 'IN';
-        let entries = [];
-        let allHistory = [];
-
-        // Load from localStorage on start
-        function loadLocalData() {
-            const saved = localStorage.getItem('vinTrackerEntries');
-            if (saved) {
-                entries = JSON.parse(saved);
-                renderTable();
-            }
-            const savedHistory = localStorage.getItem('vinTrackerHistory');
-            if (savedHistory) {
-                allHistory = JSON.parse(savedHistory);
-            }
+    // Load from localStorage on start
+    function loadLocalData() {
+        const saved = localStorage.getItem('vinTrackerEntries');
+        if (saved) {
+            entries = JSON.parse(saved);
+            renderTable();
         }
-
-        // Save to localStorage
-        function saveLocalData() {
-            localStorage.setItem('vinTrackerEntries', JSON.stringify(entries));
-            localStorage.setItem('vinTrackerHistory', JSON.stringify(allHistory));
+        const savedHistory = localStorage.getItem('vinTrackerHistory');
+        if (savedHistory) {
+            allHistory = JSON.parse(savedHistory);
         }
+    }
 
-        // Compound configurations
-        const compounds = {
-            'AB': { rows: [], prefix: 'AB', spotMax: 300 },
-            'VAN': { rows: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), prefix: 'AB', spotMax: 120 },
-            'WAYNE': { rows: [], prefix: '', spotMax: 120 },
-            'C1': { rows: [], prefix: 'C1', spotMax: 120, hasSubRow: true },
-            'WSB': { rows: ['B'], prefix: 'WS', spotMax: 0, noSpot: true },
-            'WSC': { rows: ['C'], prefix: 'WS', spotMax: 10 },
-            'EV': { rows: ['EV'], prefix: '', spotMax: 30 }
+    // Save to localStorage
+    function saveLocalData() {
+        localStorage.setItem('vinTrackerEntries', JSON.stringify(entries));
+        localStorage.setItem('vinTrackerHistory', JSON.stringify(allHistory));
+    }
+
+    // Compound configurations
+    const compounds = {
+        'AB': { rows: [], prefix: 'AB', spotMax: 300 },
+        'VAN': { rows: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), prefix: 'AB', spotMax: 120 },
+        'WAYNE': { rows: [], prefix: '', spotMax: 120 },
+        'C1': { rows: [], prefix: 'C1', spotMax: 120, hasSubRow: true },
+        'WSB': { rows: ['B'], prefix: 'WS', spotMax: 0, noSpot: true },
+        'WSC': { rows: ['C'], prefix: 'WS', spotMax: 10 },
+        'EV': { rows: ['EV'], prefix: '', spotMax: 30 }
+    };
+
+    // Generate rows
+    for (let i = 101; i <= 134; i++) compounds['AB'].rows.push(i.toString());
+    for (let i = 101; i <= 130; i++) compounds['WAYNE'].rows.push(i.toString());
+    for (let i = 201; i <= 219; i++) compounds['C1'].rows.push(i.toString());
+
+    // Navigation
+    function showView(view) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+        document.getElementById(view + 'View').classList.add('active');
+        event.target.classList.add('active');
+
+        if (view === 'history') renderHistory();
+        if (view === 'barcode') renderBarcodes();
+    }
+
+    // Toggle sections
+    function toggleSection(id) {
+        const section = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        section.classList.toggle('open');
+        arrow.textContent = section.classList.contains('open') ? '-' : '+';
+    }
+
+    // VIN Code functions
+    function handleVinInput(input) {
+        code = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+        input.value = code;
+    }
+
+    function addDigit(d) {
+        if (code.length < 8) {
+            code += d;
+            updateCodeDisplay();
+        }
+    }
+
+    function clearCode() {
+        code = '';
+        updateCodeDisplay();
+    }
+
+    function backspace() {
+        code = code.slice(0, -1);
+        updateCodeDisplay();
+    }
+
+    function updateCodeDisplay() {
+        document.getElementById('codeInput').value = code;
+    }
+
+    // Spot functions
+    function handleSpotInput(input) {
+        spot = input.value.replace(/[^0-9]/g, '').slice(0, 3);
+        input.value = spot;
+        updateLocationPreview();
+    }
+
+    function clearSpot() {
+        spot = '';
+        updateSpotDisplay();
+        updateLocationPreview();
+    }
+
+    function updateSpotDisplay() {
+        document.getElementById('spotInput').value = spot;
+    }
+
+    // IN/OUT selection
+    function selectInOut(type) {
+        selectedInOut = type;
+        document.getElementById('inBtn').classList.toggle('active', type === 'IN');
+        document.getElementById('outBtn').classList.toggle('active', type === 'OUT');
+    }
+
+    // Compound selection
+    function selectCompound(comp) {
+        selectedCompound = comp;
+        selectedSubRow = '';
+
+        // Map button text to compound names
+        const btnTextMap = {
+            'WW': 'WAYNE',
+            'WS.B': 'WSB',
+            'WS.C': 'WSC'
         };
 
-        // Generate rows
-        for (let i = 101; i <= 134; i++) compounds['AB'].rows.push(i.toString());
-        for (let i = 101; i <= 130; i++) compounds['WAYNE'].rows.push(i.toString());
-        for (let i = 201; i <= 219; i++) compounds['C1'].rows.push(i.toString());
+        // Update compound buttons
+        document.querySelectorAll('.comp-btn').forEach(btn => {
+            const btnComp = btnTextMap[btn.textContent] || btn.textContent;
+            btn.classList.toggle('active', btnComp === comp);
+        });
 
-        // Navigation
-        function showView(view) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        // Show/hide front/back for C1
+        document.getElementById('subRowSection').style.display = compounds[comp].hasSubRow ? 'grid' : 'none';
 
-            document.getElementById(view + 'View').classList.add('active');
-            event.target.classList.add('active');
+        // Show/hide spot input based on noSpot flag
+        document.getElementById('spotInput').style.display = compounds[comp].noSpot ? 'none' : 'block';
 
-            if (view === 'history') renderHistory();
-            if (view === 'barcode') renderBarcodes();
+        // Auto-select first row if none selected
+        if (!selectedRow || compounds[comp].rows.indexOf(selectedRow) === -1) {
+            selectedRow = compounds[comp].rows[0];
         }
+        updateRowDisplay();
+        updateLocationPreview();
+    }
 
-        // Toggle sections
-        function toggleSection(id) {
-            const section = document.getElementById(id);
-            const arrow = document.getElementById(id + 'Arrow');
-            section.classList.toggle('open');
-            arrow.textContent = section.classList.contains('open') ? '-' : '+';
+    function updateRowDisplay() {
+        document.getElementById('rowDisplay').textContent = selectedRow || '---';
+    }
+
+    function selectRow(row) {
+        selectedRow = row;
+        updateRowDisplay();
+        updateLocationPreview();
+    }
+
+    function selectSubRow(subRow) {
+        selectedSubRow = subRow;
+        document.querySelectorAll('.sub-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.textContent === (subRow === 'A' ? 'FRONT' : 'BACK'));
+        });
+        updateLocationPreview();
+    }
+
+    function laneUp() {
+        if (!selectedCompound) return;
+        const rows = compounds[selectedCompound].rows;
+        const idx = rows.indexOf(selectedRow);
+        if (idx < rows.length - 1) {
+            selectRow(rows[idx + 1]);
         }
+    }
 
-        // VIN Code functions
-        function handleVinInput(input) {
-            code = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
-            input.value = code;
+    function laneDown() {
+        if (!selectedCompound) return;
+        const rows = compounds[selectedCompound].rows;
+        const idx = rows.indexOf(selectedRow);
+        if (idx > 0) {
+            selectRow(rows[idx - 1]);
         }
+    }
 
-        function addDigit(d) {
-            if (code.length < 8) {
-                code += d;
-                updateCodeDisplay();
+    function clearLocation() {
+        selectedCompound = '';
+        selectedRow = '';
+        selectedSubRow = '';
+        document.querySelectorAll('.comp-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('rowDisplay').textContent = '---';
+        document.getElementById('subRowSection').style.display = 'none';
+        updateLocationPreview();
+    }
+
+    function updateLocationPreview() {
+        let location = '-';
+        const spotStr = spot ? spot.padStart(3, '0') : '___';
+
+        if (selectedCompound && selectedRow) {
+            if (selectedCompound === 'AB') {
+                location = 'AB.' + selectedRow + '.' + spotStr;
+            } else if (selectedCompound === 'VAN') {
+                location = 'AB.' + selectedRow + '.' + spotStr;
+            } else if (selectedCompound === 'WAYNE') {
+                location = selectedRow + '.' + spotStr;
+            } else if (selectedCompound === 'C1') {
+                location = 'C1.' + selectedRow + '.' + (selectedSubRow || '?') + '.' + spotStr;
+            } else if (selectedCompound === 'WSB') {
+                location = 'WS.B';
+            } else if (selectedCompound === 'WSC') {
+                location = 'WS.C.' + spotStr;
+            } else if (selectedCompound === 'EV') {
+                const evSpot = spot ? spot.padStart(2, '0') : '__';
+                location = 'EV.' + evSpot;
             }
         }
 
-        function clearCode() {
-            code = '';
-            updateCodeDisplay();
+        document.getElementById('locationPreview').textContent = location;
+    }
+
+    // Add entry
+    function addEntry() {
+        if (code.length !== 8) {
+            alert('Please enter 8-digit code');
+            return;
+        }
+        const needsSpot = !compounds[selectedCompound]?.noSpot;
+        if (!selectedCompound || !selectedRow || (needsSpot && !spot)) {
+            alert('Please select compound and location');
+            return;
+        }
+        if (selectedCompound === 'C1' && !selectedSubRow) {
+            alert('Please select front (A) or back (B)');
+            return;
         }
 
-        function backspace() {
-            code = code.slice(0, -1);
-            updateCodeDisplay();
-        }
+        const location = document.getElementById('locationPreview').textContent;
 
-        function updateCodeDisplay() {
-            document.getElementById('codeInput').value = code;
-        }
-
-        // Spot functions
-        function handleSpotInput(input) {
-            spot = input.value.replace(/[^0-9]/g, '').slice(0, 3);
-            input.value = spot;
-            updateLocationPreview();
-        }
-
-        function clearSpot() {
-            spot = '';
-            updateSpotDisplay();
-            updateLocationPreview();
-        }
-
-        function updateSpotDisplay() {
-            document.getElementById('spotInput').value = spot;
-        }
-
-        // IN/OUT selection
-        function selectInOut(type) {
-            selectedInOut = type;
-            document.getElementById('inBtn').classList.toggle('active', type === 'IN');
-            document.getElementById('outBtn').classList.toggle('active', type === 'OUT');
-        }
-
-        // Compound selection
-        function selectCompound(comp) {
-            selectedCompound = comp;
-            selectedSubRow = '';
-
-            // Map button text to compound names
-            const btnTextMap = {
-                'WW': 'WAYNE',
-                'WS.B': 'WSB',
-                'WS.C': 'WSC'
+        if (selectedInOut === 'IN') {
+            // Add new IN entry
+            const entry = {
+                code: code,
+                inLocation: location,
+                outCode: '',
+                outLocation: '',
+                timestamp: new Date().toISOString(),
+                inScanned: false,
+                outScanned: false
             };
-
-            // Update compound buttons
-            document.querySelectorAll('.comp-btn').forEach(btn => {
-                const btnComp = btnTextMap[btn.textContent] || btn.textContent;
-                btn.classList.toggle('active', btnComp === comp);
-            });
-
-            // Show/hide front/back for C1
-            document.getElementById('subRowSection').style.display = compounds[comp].hasSubRow ? 'grid' : 'none';
-
-            // Show/hide spot input based on noSpot flag
-            document.getElementById('spotInput').style.display = compounds[comp].noSpot ? 'none' : 'block';
-
-            // Auto-select first row if none selected
-            if (!selectedRow || compounds[comp].rows.indexOf(selectedRow) === -1) {
-                selectedRow = compounds[comp].rows[0];
-            }
-            updateRowDisplay();
-            updateLocationPreview();
-        }
-
-        function updateRowDisplay() {
-            document.getElementById('rowDisplay').textContent = selectedRow || '---';
-        }
-
-        function selectRow(row) {
-            selectedRow = row;
-            updateRowDisplay();
-            updateLocationPreview();
-        }
-
-        function selectSubRow(subRow) {
-            selectedSubRow = subRow;
-            document.querySelectorAll('.sub-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent === (subRow === 'A' ? 'FRONT' : 'BACK'));
-            });
-            updateLocationPreview();
-        }
-
-        function laneUp() {
-            if (!selectedCompound) return;
-            const rows = compounds[selectedCompound].rows;
-            const idx = rows.indexOf(selectedRow);
-            if (idx < rows.length - 1) {
-                selectRow(rows[idx + 1]);
-            }
-        }
-
-        function laneDown() {
-            if (!selectedCompound) return;
-            const rows = compounds[selectedCompound].rows;
-            const idx = rows.indexOf(selectedRow);
-            if (idx > 0) {
-                selectRow(rows[idx - 1]);
-            }
-        }
-
-        function clearLocation() {
-            selectedCompound = '';
-            selectedRow = '';
-            selectedSubRow = '';
-            document.querySelectorAll('.comp-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('rowDisplay').textContent = '---';
-            document.getElementById('subRowSection').style.display = 'none';
-            updateLocationPreview();
-        }
-
-        function updateLocationPreview() {
-            let location = '-';
-            const spotStr = spot ? spot.padStart(3, '0') : '___';
-
-            if (selectedCompound && selectedRow) {
-                if (selectedCompound === 'AB') {
-                    location = 'AB.' + selectedRow + '.' + spotStr;
-                } else if (selectedCompound === 'VAN') {
-                    location = 'AB.' + selectedRow + '.' + spotStr;
-                } else if (selectedCompound === 'WAYNE') {
-                    location = selectedRow + '.' + spotStr;
-                } else if (selectedCompound === 'C1') {
-                    location = 'C1.' + selectedRow + '.' + (selectedSubRow || '?') + '.' + spotStr;
-                } else if (selectedCompound === 'WSB') {
-                    location = 'WS.B';
-                } else if (selectedCompound === 'WSC') {
-                    location = 'WS.C.' + spotStr;
-                } else if (selectedCompound === 'EV') {
-                    const evSpot = spot ? spot.padStart(2, '0') : '__';
-                    location = 'EV.' + evSpot;
-                }
-            }
-
-            document.getElementById('locationPreview').textContent = location;
-        }
-
-        // Add entry
-        function addEntry() {
-            if (code.length !== 8) {
-                alert('Please enter 8-digit code');
-                return;
-            }
-            const needsSpot = !compounds[selectedCompound]?.noSpot;
-            if (!selectedCompound || !selectedRow || (needsSpot && !spot)) {
-                alert('Please select compound and location');
-                return;
-            }
-            if (selectedCompound === 'C1' && !selectedSubRow) {
-                alert('Please select front (A) or back (B)');
-                return;
-            }
-
-            const location = document.getElementById('locationPreview').textContent;
-
-            if (selectedInOut === 'IN') {
-                // Add new IN entry
+            entries.push(entry);
+            allHistory.push({ ...entry });
+        } else {
+            // Find existing entry and update OUT
+            const existingIndex = entries.findIndex(e => e.code === code && !e.outLocation);
+            if (existingIndex >= 0) {
+                entries[existingIndex].outCode = code;
+                entries[existingIndex].outLocation = location;
+            } else {
+                // No matching IN entry, create new with OUT only
                 const entry = {
-                    code: code,
-                    inLocation: location,
-                    outCode: '',
-                    outLocation: '',
+                    code: '',
+                    inLocation: '',
+                    outCode: code,
+                    outLocation: location,
                     timestamp: new Date().toISOString(),
                     inScanned: false,
                     outScanned: false
                 };
                 entries.push(entry);
-                allHistory.push({ ...entry });
-            } else {
-                // Find existing entry and update OUT
-                const existingIndex = entries.findIndex(e => e.code === code && !e.outLocation);
-                if (existingIndex >= 0) {
-                    entries[existingIndex].outCode = code;
-                    entries[existingIndex].outLocation = location;
-                } else {
-                    // No matching IN entry, create new with OUT only
-                    const entry = {
-                        code: '',
-                        inLocation: '',
-                        outCode: code,
-                        outLocation: location,
-                        timestamp: new Date().toISOString(),
-                        inScanned: false,
-                        outScanned: false
-                    };
-                    entries.push(entry);
-                }
-            }
-
-            saveLocalData();
-            renderTable();
-            saveToSheets(false); // Auto-save to Google Sheets
-
-            // Reset code and spot only
-            code = '';
-            spot = '';
-            updateCodeDisplay();
-            updateSpotDisplay();
-            updateLocationPreview();
-        }
-
-        // Render table
-        function renderTable() {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-
-            entries.forEach((entry, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="clickable ${entry.inScanned ? 'scanned' : ''}" onclick="toggleScan(${index}, 'in')">${entry.code}</td>
-                    <td class="clickable ${entry.inScanned ? 'scanned' : ''}" onclick="toggleScan(${index}, 'in')">${entry.inLocation}</td>
-                    <td class="clickable ${entry.outScanned ? 'scanned' : ''}" onclick="toggleScan(${index}, 'out')">${entry.outCode}</td>
-                    <td class="clickable ${entry.outScanned ? 'scanned' : ''}" onclick="toggleScan(${index}, 'out')">${entry.outLocation}</td>
-                    <td class="delete-btn" onclick="deleteEntry(${index})">X</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function deleteEntry(index) {
-            if (confirm('Delete this entry?')) {
-                entries.splice(index, 1);
-                saveLocalData();
-                renderTable();
-                saveToSheets(false);
             }
         }
 
-        function toggleScan(index, type) {
-            if (type === 'in') {
-                entries[index].inScanned = !entries[index].inScanned;
-            } else {
-                entries[index].outScanned = !entries[index].outScanned;
-            }
+        saveLocalData();
+        renderTable();
+        saveToSheets(false); // Auto-save to Google Sheets
+
+        // Reset code and spot only
+        code = '';
+        spot = '';
+        updateCodeDisplay();
+        updateSpotDisplay();
+        updateLocationPreview();
+    }
+
+    // Render table
+    function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+
+        entries.forEach((entry, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="clickable ${entry.inScanned ? 'scanned' : ''}" onclick="toggleScan(${index}, 'in')">${entry.code}</td>
+                <td class="clickable ${entry.inScanned ? 'scanned' : ''}" onclick="toggleScan(${index}, 'in')">${entry.inLocation}</td>
+                <td class="clickable ${entry.outScanned ? 'scanned' : ''}" onclick="toggleScan(${index}, 'out')">${entry.outCode}</td>
+                <td class="clickable ${entry.outScanned ? 'scanned' : ''}" onclick="toggleScan(${index}, 'out')">${entry.outLocation}</td>
+                <td class="edit-btn" onclick="editEntry(${index})">✎</td>
+                <td class="delete-btn" onclick="deleteEntry(${index})">X</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Edit entry
+    let editingIndex = -1;
+
+    function editEntry(index) {
+        const entry = entries[index];
+        editingIndex = index;
+        
+        // Show edit modal
+        const modal = document.getElementById('editModal');
+        modal.style.display = 'flex';
+        
+        // Populate fields
+        document.getElementById('editInCode').value = entry.code || '';
+        document.getElementById('editInLocation').value = entry.inLocation || '';
+        document.getElementById('editOutCode').value = entry.outCode || '';
+        document.getElementById('editOutLocation').value = entry.outLocation || '';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+        editingIndex = -1;
+    }
+
+    function saveEdit() {
+        if (editingIndex < 0) return;
+        
+        entries[editingIndex].code = document.getElementById('editInCode').value.toUpperCase();
+        entries[editingIndex].inLocation = document.getElementById('editInLocation').value.toUpperCase();
+        entries[editingIndex].outCode = document.getElementById('editOutCode').value.toUpperCase();
+        entries[editingIndex].outLocation = document.getElementById('editOutLocation').value.toUpperCase();
+        
+        saveLocalData();
+        renderTable();
+        saveToSheets(false);
+        closeEditModal();
+    }
+
+    function swapInOut() {
+        if (editingIndex < 0) return;
+        
+        // Swap the values in the form
+        const inCode = document.getElementById('editInCode').value;
+        const inLoc = document.getElementById('editInLocation').value;
+        const outCode = document.getElementById('editOutCode').value;
+        const outLoc = document.getElementById('editOutLocation').value;
+        
+        document.getElementById('editInCode').value = outCode;
+        document.getElementById('editInLocation').value = outLoc;
+        document.getElementById('editOutCode').value = inCode;
+        document.getElementById('editOutLocation').value = inLoc;
+    }
+
+    function deleteEntry(index) {
+        if (confirm('Delete this entry?')) {
+            entries.splice(index, 1);
             saveLocalData();
             renderTable();
             saveToSheets(false);
         }
+    }
 
-        // History
-        function renderHistory() {
-            const list = document.getElementById('historyList');
-            list.innerHTML = '';
-            allHistory.forEach(entry => {
-                const item = document.createElement('div');
-                item.className = 'history-item';
-                item.innerHTML = `<strong>${entry.code}</strong> - ${entry.inLocation} (${new Date(entry.timestamp).toLocaleDateString()})`;
-                list.appendChild(item);
-            });
+    function toggleScan(index, type) {
+        if (type === 'in') {
+            entries[index].inScanned = !entries[index].inScanned;
+        } else {
+            entries[index].outScanned = !entries[index].outScanned;
         }
+        saveLocalData();
+        renderTable();
+        saveToSheets(false);
+    }
 
-        function searchHistory() {
-            const query = document.getElementById('searchInput').value.toUpperCase();
-            const list = document.getElementById('historyList');
-            list.innerHTML = '';
+    // History
+    function renderHistory() {
+        const list = document.getElementById('historyList');
+        list.innerHTML = '';
+        allHistory.forEach(entry => {
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            item.innerHTML = `<strong>${entry.code}</strong> - ${entry.inLocation} (${new Date(entry.timestamp).toLocaleDateString()})`;
+            list.appendChild(item);
+        });
+    }
 
-            allHistory.filter(e => e.code.includes(query) || e.inLocation.includes(query)).forEach(entry => {
-                const item = document.createElement('div');
-                item.className = 'history-item';
-                item.innerHTML = `<strong>${entry.code}</strong> - ${entry.inLocation} (${new Date(entry.timestamp).toLocaleDateString()})`;
-                list.appendChild(item);
-            });
-        }
+    function searchHistory() {
+        const query = document.getElementById('searchInput').value.toUpperCase();
+        const list = document.getElementById('historyList');
+        list.innerHTML = '';
 
-        // Barcodes - only show unscanned entries
-        function renderBarcodes() {
-            const list = document.getElementById('barcodeList');
-            list.innerHTML = '';
+        allHistory.filter(e => e.code.includes(query) || e.inLocation.includes(query)).forEach(entry => {
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            item.innerHTML = `<strong>${entry.code}</strong> - ${entry.inLocation} (${new Date(entry.timestamp).toLocaleDateString()})`;
+            list.appendChild(item);
+        });
+    }
 
-            // Filter to only show entries not yet scanned
-            const unscanned = entries.filter(e => !e.inScanned);
+    // Barcodes - show unscanned entries (both IN and OUT)
+    function renderBarcodes() {
+        const list = document.getElementById('barcodeList');
+        list.innerHTML = '';
 
-            if (unscanned.length === 0) {
-                list.innerHTML = '<p>No unscanned VINs</p>';
-                return;
+        // Build list of unscanned items (IN entries not scanned + OUT entries not scanned)
+        const unscannedItems = [];
+        
+        entries.forEach((entry, entryIndex) => {
+            // Add unscanned IN entries
+            if (entry.code && !entry.inScanned) {
+                unscannedItems.push({
+                    code: entry.code,
+                    location: entry.inLocation,
+                    type: 'IN',
+                    entryIndex: entryIndex
+                });
             }
+            // Add unscanned OUT entries
+            if (entry.outCode && !entry.outScanned) {
+                unscannedItems.push({
+                    code: entry.outCode,
+                    location: entry.outLocation,
+                    type: 'OUT',
+                    entryIndex: entryIndex
+                });
+            }
+        });
 
-            unscanned.forEach((entry, index) => {
-                const item = document.createElement('div');
-                item.className = 'barcode-item';
-                item.innerHTML = `
-                    <svg id="barcode-${index}"></svg>
-                    <p><strong>VIN:</strong> ${entry.code}</p>
-                    <p><strong>LOCATION:</strong> ${entry.inLocation}</p>
-                `;
-                list.appendChild(item);
-
-                try {
-                    JsBarcode(`#barcode-${index}`, entry.code, {
-                        format: 'CODE128',
-                        width: 2,
-                        height: 50,
-                        displayValue: false
-                    });
-                } catch (e) {
-                    console.error('Barcode error:', e);
-                }
-            });
+        if (unscannedItems.length === 0) {
+            list.innerHTML = '<p>No unscanned VINs</p>';
+            return;
         }
 
-        // Google Sheets sync
-        const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbweDFahT4kc8mPWBHuNEECe6qZJHy9ljLYGqP-64g8nWvcpkQZvL738m7r9aAAsSeN5/exec';
+        unscannedItems.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'barcode-item';
+            div.innerHTML = `
+                <svg id="barcode-${index}"></svg>
+                <p><strong>VIN:</strong> ${item.code}</p>
+                <p><strong>LOCATION:</strong> ${item.location}</p>
+                <p><strong>TYPE:</strong> ${item.type}</p>
+            `;
+            list.appendChild(div);
 
-        async function saveToSheets(showAlert = true) {
             try {
-                const url = SHEETS_URL + '?action=save&data=' + encodeURIComponent(JSON.stringify(entries));
-                const response = await fetch(url, { method: 'GET', mode: 'no-cors' });
-                if (showAlert) alert('Data saved to Google Sheets!');
+                JsBarcode(`#barcode-${index}`, item.code, {
+                    format: 'CODE128',
+                    width: 2,
+                    height: 50,
+                    displayValue: false
+                });
             } catch (e) {
-                if (showAlert) alert('Save error: ' + e.message);
+                console.error('Barcode error:', e);
             }
-        }
+        });
+    }
 
-        async function loadFromSheets(showAlert = true) {
-            try {
-                const response = await fetch(SHEETS_URL + '?action=load');
-                if (response.ok) {
-                    const data = await response.json();
-                    entries = data;
-                    saveLocalData();
-                    renderTable();
-                    if (showAlert) alert('Data loaded from Google Sheets!');
-                } else {
-                    if (showAlert) alert('Failed to load from Google Sheets');
-                }
-            } catch (e) {
-                if (showAlert) alert('Load error: ' + e.message);
-                // Fall back to local data
-                loadLocalData();
+    // Google Sheets sync
+    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbweDFahT4kc8mPWBHuNEECe6qZJHy9ljLYGqP-64g8nWvcpkQZvL738m7r9aAAsSeN5/exec';
+
+    async function saveToSheets(showAlert = true) {
+        try {
+            const url = SHEETS_URL + '?action=save&data=' + encodeURIComponent(JSON.stringify(entries));
+            const response = await fetch(url, { method: 'GET', mode: 'no-cors' });
+            if (showAlert) alert('Data saved to Google Sheets!');
+        } catch (e) {
+            if (showAlert) alert('Save error: ' + e.message);
+        }
+    }
+
+    async function loadFromSheets(showAlert = true) {
+        try {
+            const response = await fetch(SHEETS_URL + '?action=load');
+            if (response.ok) {
+                const data = await response.json();
+                entries = data;
+                saveLocalData();
+                renderTable();
+                if (showAlert) alert('Data loaded from Google Sheets!');
+            } else {
+                if (showAlert) alert('Failed to load from Google Sheets');
             }
+        } catch (e) {
+            if (showAlert) alert('Load error: ' + e.message);
+            // Fall back to local data
+            loadLocalData();
         }
+    }
 
-        async function exportToOverall() {
-            if (entries.length === 0) {
-                alert('No entries to export');
-                return;
-            }
-            try {
-                const url = SHEETS_URL + '?action=archive&data=' + encodeURIComponent(JSON.stringify(entries));
-                await fetch(url, { method: 'GET', mode: 'no-cors' });
-                alert('Exported to Overall!');
-            } catch (e) {
-                alert('Export error: ' + e.message);
-            }
+    async function exportToOverall() {
+        if (entries.length === 0) {
+            alert('No entries to export');
+            return;
         }
-
-        // Export PDF using print
-        function exportPDF() {
-            const now = new Date();
-            const dateStr = String(now.getDate()).padStart(2, '0') + '/' +
-                           String(now.getMonth() + 1).padStart(2, '0') + '/' +
-                           now.getFullYear();
-
-            // Build print content
-            let html = '<html><head><title>PDI ' + dateStr + '</title>';
-            html += '<style>';
-            html += '@page { size: auto; margin: 10mm; margin-header: 0; margin-footer: 0; }';
-            html += '@media print { @page { margin: 10mm; } }';
-            html += 'body { font-family: Arial, sans-serif; padding: 20px; -webkit-print-color-adjust: exact; }';
-            html += 'h2 { text-align: center; margin-top: 0; }';
-            html += 'table { width: 100%; border-collapse: collapse; }';
-            html += 'th, td { border: 1px solid black; padding: 8px; text-align: center; }';
-            html += '</style></head><body>';
-            html += '<h2>PDI ' + dateStr + '</h2>';
-            html += '<table><thead><tr><th>IN</th><th>LOCATION</th><th>OUT</th><th>LOCATION</th></tr></thead><tbody>';
-
-            entries.forEach(entry => {
-                html += '<tr>';
-                html += '<td>' + (entry.code || '') + '</td>';
-                html += '<td>' + (entry.inLocation || '') + '</td>';
-                html += '<td>' + (entry.outCode || '') + '</td>';
-                html += '<td>' + (entry.outLocation || '') + '</td>';
-                html += '</tr>';
-            });
-
-            html += '</tbody></table></body></html>';
-
-            // Open print window
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(html);
-            printWindow.document.close();
-            printWindow.print();
+        try {
+            const url = SHEETS_URL + '?action=archive&data=' + encodeURIComponent(JSON.stringify(entries));
+            await fetch(url, { method: 'GET', mode: 'no-cors' });
+            alert('Exported to Overall!');
+        } catch (e) {
+            alert('Export error: ' + e.message);
         }
+    }
 
-        // Initialize - auto-load from Google Sheets
-        loadFromSheets(false);
-    </script>
+    // Export PDF using print
+    function exportPDF() {
+        const now = new Date();
+        const dateStr = String(now.getDate()).padStart(2, '0') + '/' +
+                       String(now.getMonth() + 1).padStart(2, '0') + '/' +
+                       now.getFullYear();
+
+        // Build print content
+        let html = '<html><head><title>PDI ' + dateStr + '</title>';
+        html += '<style>';
+        html += '@page { size: auto; margin: 0; }';
+        html += '@media print { html, body { margin: 0; padding: 0; } }';
+        html += 'body { font-family: Arial, sans-serif; padding: 20px; margin: 0; -webkit-print-color-adjust: exact; }';
+        html += 'h2 { text-align: center; margin-top: 10px; }';
+        html += 'table { width: 100%; border-collapse: collapse; }';
+        html += 'th, td { border: 1px solid black; padding: 8px; text-align: center; }';
+        html += '</style></head><body>';
+        html += '<h2>PDI ' + dateStr + '</h2>';
+        html += '<table><thead><tr><th>IN</th><th>LOCATION</th><th>OUT</th><th>LOCATION</th></tr></thead><tbody>';
+
+        entries.forEach(entry => {
+            html += '<tr>';
+            html += '<td>' + (entry.code || '') + '</td>';
+            html += '<td>' + (entry.inLocation || '') + '</td>';
+            html += '<td>' + (entry.outCode || '') + '</td>';
+            html += '<td>' + (entry.outLocation || '') + '</td>';
+            html += '</tr>';
+        });
+
+        html += '</tbody></table></body></html>';
+
+        // Open print window
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(html);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    // Initialize - auto-load from Google Sheets
+    loadFromSheets(false);
+</script>
+```
+
 </body>
 </html>
