@@ -477,6 +477,8 @@
     }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 ```
 
 </head>
@@ -1285,42 +1287,49 @@
         }
     }
 
-    // Export PDF using print
+    // Export PDF using jsPDF
     function exportPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
         const now = new Date();
         const dateStr = String(now.getDate()).padStart(2, '0') + '/' +
                        String(now.getMonth() + 1).padStart(2, '0') + '/' +
                        now.getFullYear();
 
-        // Build print content
-        let html = '<html><head><title>PDI ' + dateStr + '</title>';
-        html += '<style>';
-        html += '@page { size: auto; margin: 0; }';
-        html += '@media print { html, body { margin: 0; padding: 0; } }';
-        html += 'body { font-family: Arial, sans-serif; padding: 20px; margin: 0; -webkit-print-color-adjust: exact; }';
-        html += 'h2 { text-align: center; margin-top: 10px; }';
-        html += 'table { width: 100%; border-collapse: collapse; }';
-        html += 'th, td { border: 1px solid black; padding: 8px; text-align: center; }';
-        html += '</style></head><body>';
-        html += '<h2>PDI ' + dateStr + '</h2>';
-        html += '<table><thead><tr><th>IN</th><th>LOCATION</th><th>OUT</th><th>LOCATION</th></tr></thead><tbody>';
+        // Title
+        doc.setFontSize(18);
+        doc.text('PDI ' + dateStr, doc.internal.pageSize.getWidth() / 2, 15, { align: 'center' });
 
-        entries.forEach(entry => {
-            html += '<tr>';
-            html += '<td>' + (entry.code || '') + '</td>';
-            html += '<td>' + (entry.inLocation || '') + '</td>';
-            html += '<td>' + (entry.outCode || '') + '</td>';
-            html += '<td>' + (entry.outLocation || '') + '</td>';
-            html += '</tr>';
+        // Table data
+        const tableData = entries.map(entry => [
+            entry.code || '',
+            entry.inLocation || '',
+            entry.outCode || '',
+            entry.outLocation || ''
+        ]);
+
+        // Generate table
+        doc.autoTable({
+            head: [['IN', 'LOCATION', 'OUT', 'LOCATION']],
+            body: tableData,
+            startY: 25,
+            styles: {
+                halign: 'center',
+                fontSize: 10
+            },
+            headStyles: {
+                fillColor: [0, 0, 0],
+                textColor: [255, 255, 255],
+                fontStyle: 'bold'
+            },
+            alternateRowStyles: {
+                fillColor: [245, 245, 245]
+            }
         });
 
-        html += '</tbody></table></body></html>';
-
-        // Open print window
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(html);
-        printWindow.document.close();
-        printWindow.print();
+        // Download
+        doc.save('PDI_' + dateStr.replace(/\//g, '-') + '.pdf');
     }
 
     // Initialize - auto-load from Google Sheets
