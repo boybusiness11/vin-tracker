@@ -386,6 +386,74 @@
         border: 1px dashed black;
     }
 
+    .barcode-counter {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #666;
+    }
+
+    .barcode-single {
+        text-align: center;
+        padding: 20px;
+        border: 2px dashed black;
+        margin-bottom: 15px;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .barcode-single p {
+        margin: 5px 0;
+    }
+
+    .barcode-single .vin-code {
+        font-size: 28px;
+        font-weight: bold;
+        font-family: monospace;
+        margin: 10px 0;
+    }
+
+    .barcode-single .vin-location {
+        font-size: 20px;
+        color: #333;
+    }
+
+    .barcode-single .vin-type {
+        font-size: 14px;
+        padding: 3px 10px;
+        background: #eee;
+        border-radius: 3px;
+        margin-top: 5px;
+    }
+
+    .barcode-nav {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+        gap: 10px;
+    }
+
+    .barcode-nav-btn {
+        padding: 15px;
+        font-size: 14px;
+        cursor: pointer;
+        border: 1px solid black;
+        background: white;
+    }
+
+    .barcode-scanned-btn {
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        border: 2px solid green;
+        background: green;
+        color: white;
+    }
+
     .sync-btns {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -497,7 +565,15 @@
 <!-- BARCODE VIEW -->
 <div id="barcodeView" class="view">
     <h3>Unscanned VINs</h3>
-    <div class="barcode-list" id="barcodeList"></div>
+    <div class="barcode-counter" id="barcodeCounter">0 of 0</div>
+    <div class="barcode-single" id="barcodeSingle">
+        <p style="text-align:center;color:#666;">No unscanned VINs</p>
+    </div>
+    <div class="barcode-nav">
+        <button class="barcode-nav-btn" onclick="prevBarcode()">← PREV</button>
+        <button class="barcode-scanned-btn" onclick="markScanned()">✓ SCANNED</button>
+        <button class="barcode-nav-btn" onclick="nextBarcode()">NEXT →</button>
+    </div>
 </div>
 
 <!-- EDIT MODAL -->
@@ -538,6 +614,87 @@
     let selectedInOut = 'IN';
     let entries = [];
     let allHistory = [];
+    let pendingSync = []; // Queue for failed saves
+    let isOnline = navigator.onLine;
+
+    // Online/Offline detection
+    window.addEventListener('online', () => {
+        isOnline = true;
+        showStatus('Back online - syncing...');
+        syncPendingChanges();
+    });
+
+    window.addEventListener('offline', () => {
+        isOnline = false;
+        showStatus('Offline - changes will sync when connected');
+    });
+
+    function showStatus(message) {
+        let status = document.getElementById('statusBar');
+        if (!status) {
+            status = document.createElement('div');
+            status.id = 'statusBar';
+            status.style.cssText = 'position:fixed;top:0;left:0;right:0;padding:8px;text-align:center;font-size:12px;z-index:999;transition:opacity 0.3s;';
+            document.body.prepend(status);
+        }
+        status.textContent = message;
+        status.style.background = isOnline ? '#4CAF50' : '#ff9800';
+        status.style.color = 'white';
+        status.style.opacity = '1';
+        
+        // Auto-hide after 3 seconds if online
+        if (isOnline) {
+            setTimeout(() => {
+                status.style.opacity = '0';
+            }, 3000);
+        }
+    }
+
+    // Load pending sync queue from localStorage
+    function loadPendingSync() {
+        const saved = localStorage.getItem('vinTrackerPending');
+        if (saved) {
+            pendingSync = JSON.parse(saved);
+            if (pendingSync.length > 0) {
+                showStatus(pendingSync.length + ' pending changes to sync');
+            }
+        }
+    }
+
+    // Save pending sync queue to localStorage
+    function savePendingSync() {
+        localStorage.setItem('vinTrackerPending', JSON.stringify(pendingSync));
+    }
+
+    // Add to pending queue
+    function addToPendingQueue(action, data) {
+        pendingSync.push({
+            action: action,
+            data: data,
+            timestamp: new Date().toISOString()
+        });
+        savePendingSync();
+    }
+
+    // Sync all pending changes
+    async function syncPendingChanges() {
+        if (pendingSync.length === 0) return;
+        
+        showStatus('Syncing ' + pendingSync.length + ' pending changes...');
+        
+        // Just sync current entries state - this overwrites with latest
+        try {
+            const url = SHEETS_URL + '?action=save&data=' + encodeURIComponent(JSON.stringify(entries));
+            const response = await fetch(url, { method: 'GET', mode: 'no-cors' });
+            
+            // Clear pending queue on success
+            pendingSync = [];
+            savePendingSync();
+            showStatus('All changes synced!');
+        } catch (e) {
+            showStatus('Sync failed - will retry');
+        }
+    }
 
     // Load from localStorage on start
     function loadLocalData() {
@@ -908,35 +1065,82 @@
     // History
     function renderHistory() {
         const list = document.getElementById('historyList');
-        list.innerHTML = '';
-        allHistory.forEach(entry => {
-            const item = document.createElement('div');
-            item.className = 'history-item';
-            item.innerHTML = `<strong>${entry.code}</strong> - ${entry.inLocation} (${new Date(entry.timestamp).toLocaleDateString()})`;
-            list.appendChild(item);
-        });
+        list.innerHTML = '<p style="text-align:center;color:#666;">Type to search sheets...</p>';
     }
 
+    let searchTimeout;
     function searchHistory() {
-        const query = document.getElementById('searchInput').value.toUpperCase();
+        const query = document.getElementById('searchInput').value.toUpperCase().trim();
         const list = document.getElementById('historyList');
-        list.innerHTML = '';
-
-        allHistory.filter(e => e.code.includes(query) || e.inLocation.includes(query)).forEach(entry => {
-            const item = document.createElement('div');
-            item.className = 'history-item';
-            item.innerHTML = `<strong>${entry.code}</strong> - ${entry.inLocation} (${new Date(entry.timestamp).toLocaleDateString()})`;
-            list.appendChild(item);
-        });
+        
+        // Clear previous timeout
+        clearTimeout(searchTimeout);
+        
+        if (!query) {
+            list.innerHTML = '<p style="text-align:center;color:#666;">Type to search sheets...</p>';
+            return;
+        }
+        
+        if (query.length < 2) {
+            list.innerHTML = '<p style="text-align:center;color:#666;">Type at least 2 characters...</p>';
+            return;
+        }
+        
+        list.innerHTML = '<p style="text-align:center;color:#666;">Searching...</p>';
+        
+        // Debounce - wait 300ms after typing stops
+        searchTimeout = setTimeout(() => {
+            searchSheets(query);
+        }, 300);
     }
 
-    // Barcodes - show unscanned entries (both IN and OUT)
-    function renderBarcodes() {
-        const list = document.getElementById('barcodeList');
-        list.innerHTML = '';
+    async function searchSheets(query) {
+        const list = document.getElementById('historyList');
+        try {
+            const response = await fetch(SHEETS_URL + '?action=search&query=' + encodeURIComponent(query));
+            if (response.ok) {
+                const results = await response.json();
+                
+                if (results.length === 0) {
+                    list.innerHTML = '<p style="text-align:center;color:#666;">No results found</p>';
+                    return;
+                }
+                
+                list.innerHTML = '';
+                results.forEach(entry => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    
+                    let html = '';
+                    if (entry.code) {
+                        html += `<strong>IN:</strong> ${entry.code} → ${entry.inLocation || '-'}<br>`;
+                    }
+                    if (entry.outCode) {
+                        html += `<strong>OUT:</strong> ${entry.outCode} → ${entry.outLocation || '-'}<br>`;
+                    }
+                    if (entry.timestamp) {
+                        html += `<small style="color:#666;">${new Date(entry.timestamp).toLocaleDateString()}</small>`;
+                    }
+                    
+                    item.innerHTML = html;
+                    list.appendChild(item);
+                });
+            } else {
+                list.innerHTML = '<p style="text-align:center;color:red;">Search failed</p>';
+            }
+        } catch (e) {
+            console.error('Search error:', e);
+            list.innerHTML = '<p style="text-align:center;color:red;">Search error: ' + e.message + '</p>';
+        }
+    }
 
+    // Barcodes - single view with navigation
+    let unscannedItems = [];
+    let currentBarcodeIndex = 0;
+
+    function renderBarcodes() {
         // Build list of unscanned items (IN entries not scanned + OUT entries not scanned)
-        const unscannedItems = [];
+        unscannedItems = [];
         
         entries.forEach((entry, entryIndex) => {
             // Add unscanned IN entries
@@ -945,7 +1149,8 @@
                     code: entry.code,
                     location: entry.inLocation,
                     type: 'IN',
-                    entryIndex: entryIndex
+                    entryIndex: entryIndex,
+                    scanType: 'in'
                 });
             }
             // Add unscanned OUT entries
@@ -954,38 +1159,84 @@
                     code: entry.outCode,
                     location: entry.outLocation,
                     type: 'OUT',
-                    entryIndex: entryIndex
+                    entryIndex: entryIndex,
+                    scanType: 'out'
                 });
             }
         });
 
+        // Reset index if out of bounds
+        if (currentBarcodeIndex >= unscannedItems.length) {
+            currentBarcodeIndex = Math.max(0, unscannedItems.length - 1);
+        }
+
+        updateBarcodeDisplay();
+    }
+
+    function updateBarcodeDisplay() {
+        const container = document.getElementById('barcodeSingle');
+        const counter = document.getElementById('barcodeCounter');
+
         if (unscannedItems.length === 0) {
-            list.innerHTML = '<p>No unscanned VINs</p>';
+            counter.textContent = '0 of 0';
+            container.innerHTML = '<p style="color:#666;">No unscanned VINs</p>';
             return;
         }
 
-        unscannedItems.forEach((item, index) => {
-            const div = document.createElement('div');
-            div.className = 'barcode-item';
-            div.innerHTML = `
-                <svg id="barcode-${index}"></svg>
-                <p><strong>VIN:</strong> ${item.code}</p>
-                <p><strong>LOCATION:</strong> ${item.location}</p>
-                <p><strong>TYPE:</strong> ${item.type}</p>
-            `;
-            list.appendChild(div);
+        const item = unscannedItems[currentBarcodeIndex];
+        counter.textContent = (currentBarcodeIndex + 1) + ' of ' + unscannedItems.length;
 
-            try {
-                JsBarcode(`#barcode-${index}`, item.code, {
-                    format: 'CODE128',
-                    width: 2,
-                    height: 50,
-                    displayValue: false
-                });
-            } catch (e) {
-                console.error('Barcode error:', e);
-            }
-        });
+        container.innerHTML = `
+            <svg id="barcode-current"></svg>
+            <p class="vin-code">${item.code}</p>
+            <p class="vin-location">${item.location}</p>
+            <p class="vin-type">${item.type}</p>
+        `;
+
+        try {
+            JsBarcode('#barcode-current', item.code, {
+                format: 'CODE128',
+                width: 2,
+                height: 80,
+                displayValue: false
+            });
+        } catch (e) {
+            console.error('Barcode error:', e);
+        }
+    }
+
+    function prevBarcode() {
+        if (currentBarcodeIndex > 0) {
+            currentBarcodeIndex--;
+            updateBarcodeDisplay();
+        }
+    }
+
+    function nextBarcode() {
+        if (currentBarcodeIndex < unscannedItems.length - 1) {
+            currentBarcodeIndex++;
+            updateBarcodeDisplay();
+        }
+    }
+
+    function markScanned() {
+        if (unscannedItems.length === 0) return;
+
+        const item = unscannedItems[currentBarcodeIndex];
+        
+        // Mark as scanned in entries
+        if (item.scanType === 'in') {
+            entries[item.entryIndex].inScanned = true;
+        } else {
+            entries[item.entryIndex].outScanned = true;
+        }
+
+        saveLocalData();
+        renderTable();
+        saveToSheets(false);
+
+        // Refresh barcode list and show next
+        renderBarcodes();
     }
 
     // Google Sheets sync
